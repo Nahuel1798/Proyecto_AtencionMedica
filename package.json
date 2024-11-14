@@ -1,6 +1,7 @@
 {
   "name": "myapp",
   "version": "0.0.0",
+  "main": "app.js",
   "private": true,
   "scripts": {
     "start": "nodemon ./bin/www"
