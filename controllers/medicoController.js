@@ -8,27 +8,56 @@ exports.loginPage = (req, res) => {
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
-  // Verificar la existencia del médico en la base de datos
+  // Adjust the column name in the query if needed (e.g., to 'contrasena' if that's the actual name).
   const [rows] = await db.execute('SELECT * FROM medico WHERE email = ? AND contraseña = ?', [email, password]);
-
+  
+  // Debugging output
+  console.log('Query result:', rows);
+  
   if (rows.length > 0) {
-    // Crear una sesión para el médico
-    req.session.medicoId = rows[0].id_medico;
-    res.redirect(`/agenda/${rows[0].id_medico}`);
+    const medico = rows[0];
+    
+    // Save medico ID in session
+    req.session.medicoId = medico.id_medico;
+    res.redirect(`/agenda/${medico.id_medico}`);
   } else {
-    res.render('login', { message: 'Usuario o contraseña incorrectas' });
+    res.render('login', { message: 'Usuario o contraseña incorrectas' });
   }
 };
 
+// Middleware de autenticación
 exports.isAuthenticated = (req, res, next) => {
   if (req.session.medicoId) {
-    // Continuar si el médico está autenticado
-    next();
+    next(); // Continuar si el médico está autenticado
   } else {
-    // Redirigir a la página de inicio de sesión si no está autenticado
-    res.redirect('/login');
+    res.redirect('/login'); // Redirigir si no está autenticado
   }
 };
+
+// exports.login = async (req, res) => {
+//   const { email, password } = req.body;
+
+//   // Verificar la existencia del médico en la base de datos
+//   const [rows] = await db.execute('SELECT * FROM medico WHERE email = ? AND contraseña = ?', [email, password]);
+
+//   if (rows.length > 0) {
+//     // Crear una sesión para el médico
+//     req.session.medicoId = rows[0].id_medico;
+//     res.redirect(`/agenda/${rows[0].id_medico}`);
+//   } else {
+//     res.render('login', { message: 'Usuario o contraseña incorrectas' });
+//   }
+// };
+
+// exports.isAuthenticated = (req, res, next) => {
+//   if (req.session.medicoId) {
+//     // Continuar si el médico está autenticado
+//     next();
+//   } else {
+//     // Redirigir a la página de inicio de sesión si no está autenticado
+//     res.redirect('/login');
+//   }
+// };
 
 exports.cancelarTurnosPasados = async () => {
   const fechaActual = new Date().toISOString().split('T')[0]; // Fecha de hoy en formato yyyy-MM-dd

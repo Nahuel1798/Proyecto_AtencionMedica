@@ -3,7 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var session = require('express-session');
+var cookieSession = require('cookie-session');
 require('dotenv').config();
 
 var indexRouter = require('./routes/index');
@@ -24,18 +24,33 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Configuración de la sesión
-app.use(session({
-  secret: 'medicoApp',
-  resave: false,
-  saveUninitialized: true,
-}));
+// Configuración de cookie-session
+app.use(
+  cookieSession({
+    name: 'session',
+    keys: [process.env.SESSION_SECRET || 'clave_secreta'],
+    maxAge: 24 * 60 * 60 * 1000, // 1 día de duración de la cookie
+  })
+);
 
-// Middleware de autenticación
+// Middleware para hacer accesible `medicoId` en las vistas
 app.use((req, res, next) => {
-  res.locals.medicoId = req.session.medicoId; // Acceso al `medicoId` en las vistas
+  res.locals.medicoId = req.session.medicoId;
   next();
 });
+
+// // Configuración de la sesión
+// app.use(session({
+//   secret: 'medicoApp',
+//   resave: false,
+//   saveUninitialized: true,
+// }));
+
+// // Middleware de autenticación
+// app.use((req, res, next) => {
+//   res.locals.medicoId = req.session.medicoId; // Acceso al `medicoId` en las vistas
+//   next();
+// });
 
 // Rutas
 app.use('/', indexRouter);
