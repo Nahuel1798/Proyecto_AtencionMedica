@@ -1,0 +1,24 @@
+extends layout
+
+block content
+    h1 Historial Clínico de #{consulta[0].paciente_nombre || 'Paciente No Encontrado'}
+    // Botón para volver a la agenda
+    div
+      a.button(href=`/agenda/${medicoId}`) Volver a la agenda
+    if consulta
+      each consultas in consulta
+        div.consulta
+          h2 Consulta realizada el #{consultas.fecha_consulta} #{consultas.hora}
+          p Medico a cargo: #{consultas.medico || 'No disponible'}
+          p Diagnóstico: #{consultas.diagnostico || 'No disponible'}
+          p Evolución: #{consultas.evolucion || 'No disponible'}
+          p Alergias: #{consultas.alergias || 'No disponible'}
+          p Antecedentes Patológicos: #{consultas.antecedentes || 'No disponible'}
+          p Hábitos: #{consultas.habitos || 'No disponible'}
+          p Medicamentos en uso: #{consultas.medicamento || 'No disponible'}
+          hr
+    else
+      p No se encontraron datos del historial clínico.
+
+    
+    

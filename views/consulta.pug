@@ -1,0 +1,105 @@
+extends layout
+
+block content
+    h1.consulta Formulario de Consulta Médica Completa
+
+    form.consulta(action=`/consulta/${turno.id_turno}/${turno.id_paciente}`, method="POST")
+      // Datos de la Consulta
+      fieldset
+        legend Datos de la Consulta
+
+        //- Diagnóstico
+        div
+          label(for='diagnostico') Diagnóstico:
+          textarea(name='diagnostico' id='diagnostico' rows="4" cols="50" required)
+
+        div
+          label(for='tipo_diagnostico') Tipo de Diagnóstico:
+          input(type='text' name='tipo_diagnostico' id='tipo_diagnostico' required)
+
+        //- Evolución
+        div
+          label(for="evolucion") Evolución: 
+          textarea(name='evolucion' id='evolucion' rows="4" cols="50" required)
+
+        div
+          label(for="fecha_evolucion") Fecha de Evolución: 
+          input(type='date' name='fecha_evolucion' id='fecha_evolucion' required)
+
+      // Alergias (opcional)
+      fieldset
+        legend Alergias
+        div
+          label(for='alergias') Alergias:
+          textarea(name='alergias' id='alergias' rows="4" cols="50")
+        div
+          label(for='alergia_fecha_desde') Fecha Desde:
+          input(type='date' name='alergia_fecha_desde' id='alergia_fecha_desde')
+        div
+          label(for='alergia_fecha_hasta') Fecha Hasta:
+          input(type='date' name='alergia_fecha_hasta' id='alergia_fecha_hasta')
+        //- Importancia de la alergia
+        div 
+           label(for='importancia_alergia') Importancia de la Alergia:
+           select(name="importancia_alergia" id="importancia_alergia")
+            if importancias.length > 0
+              each importancia in importancias
+                option.consulta(value=importancia.id_importancia) #{importancia.nomenclatura}
+            else
+              option(value='') No hay importancias disponibles
+      // Antecedentes (opcional)
+      fieldset
+        legend Antecedentes
+        div
+          label(for='antecedentes') Descripción de Antecedentes:
+          textarea(name='antecedentes' id='antecedentes' rows="4" cols="50")
+        div
+          label(for='fecha_desde_antecedentes') Fecha Desde:
+          input(type='date' name='fecha_desde_antecedentes' id='fecha_desde_antecedentes')
+        div
+          label(for='fecha_hasta_antecedentes') Fecha Hasta:
+          input(type='date' name='fecha_hasta_antecedentes' id='fecha_hasta_antecedentes')
+
+      // Hábitos (opcional)
+      fieldset
+        legend Hábitos
+        div
+          label(for='habitos') Descripción de Hábitos:
+          textarea(name='habitos' id='habitos' rows="4" cols="50")
+        div
+          label(for='fecha_desde_habitos') Fecha Desde:
+          input(type='date' name='fecha_desde_habitos' id='fecha_desde_habitos')
+        div
+          label(for='fecha_hasta_habitos') Fecha Hasta:
+          input(type='date' name='fecha_hasta_habitos' id='fecha_hasta_habitos')
+
+      // Medicamentos (opcional)
+      fieldset
+        legend Medicamentos
+        div
+          label(for='medicamentos_nombre') Nombre del Medicamento:
+          input(type='text' name='medicamentos_nombre' id='medicamentos_nombre')
+        div
+          label(for='medicamentos_dosis') Dosis:
+          input(type='text' name='medicamentos_dosis' id='medicamentos_dosis')
+        div
+          label(for='medicamentos_frecuencia') Frecuencia:
+          input(type='text' name='medicamentos_frecuencia' id='medicamentos_frecuencia')
+
+      // Botón para enviar el formulario
+      div
+        button(type='submit') Guardar Consulta
+
+    // Mensaje de éxito si existe
+    if successMessage
+      div.success
+        p= successMessage
+
+    // Enlace para volver a la agenda
+    div
+      a(href=`/agenda/${medicoId}`) Volver a la agenda
+
+    // Botón para cancelar la consulta si el estado es "Pendiente"
+    if turno.estado === 'Pendiente'
+      form(method="POST", action=`/consulta/${turno.id_turno}/${turno.id_paciente}/cancelar`)
+        button(type="submit") Cancelar Consulta

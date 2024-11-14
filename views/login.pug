@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  form.login(action="/login" method="POST")
+    h1.login Ingrese al sistema
+    label.loginC(for="username") Usuario: 
+    input.loginE(type="email" name="email" placeholder="Email" required)
+    label.loginC(for="contraseña") Contraseña:
+    input.loginE(type="password" name="password" placeholder="Contraseña" required)
+    button.login(type="submit") Ingresar  
+  if message
+      p= message
