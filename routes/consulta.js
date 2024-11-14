@@ -11,7 +11,7 @@ router.get('/consulta/:turnoId/:pacienteId', consultaController.formularioConsul
 router.post('/consulta/:turnoId/:pacienteId', consultaController.guardarConsulta);
 
 //ruta para mostrar la agenda del medico
-router.get('/agenda/:medicoId', medicoController.agenda);
+router.get('/agenda/:medicoId',  medicoController.agenda);
 
 // Ruta para cancelar la consulta
 router.post('/consulta/:turnoId/:pacienteId/cancelar', consultaController.cancelarConsulta);

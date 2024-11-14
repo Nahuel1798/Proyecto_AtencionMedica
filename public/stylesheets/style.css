@@ -167,15 +167,44 @@ button.login{
   outline: none;
 }
 
-/* Estilos para Mensajes de Error */
-.error {
+.error-message {
+  display: block; /* Asegúrate de que el mensaje se muestre */
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  text-align: center;
+}
+
+
+/* Estilos para el mensaje */
+/* p {
+  margin-top: 15px;
+  font-size: 1em;
+  color: #333;
+  padding: 10px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+p.success {
+  background-color: #d4edda;
+  color: black;
+  border: 1px solid #c3e6cb;
+}
+
+p.error {
+  background-color: #f8d7da;
+  color: #721c24;
   background-color: #f8d7da;
   color: #721c24;
   padding: 10px;
   border: 1px solid #f5c6cb;
   border-radius: 5px;
   margin: 10px 0;
-}
+} */
 
 /* Vista de Historial Clínico */
 .consulta {
@@ -432,6 +461,13 @@ th, td {
   padding: 12px;
   text-align: center;
   border: 1px solid #ddd;
+}
+
+.massage {
+  width: 100%;
+  height: 150%;
+  border-collapse: collapse;
+  margin-top: 20px;
 }
 
 th {

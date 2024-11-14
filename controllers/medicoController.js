@@ -30,12 +30,20 @@ exports.isAuthenticated = (req, res, next) => {
   }
 };
 
+exports.cancelarTurnosPasados = async () => {
+  const fechaActual = new Date().toISOString().split('T')[0]; // Fecha de hoy en formato yyyy-MM-dd
+  await db.execute('UPDATE turno SET id_estado = 3 WHERE fecha_turno < ? AND id_estado = 1', [fechaActual]);
+};
+
 exports.agenda = async (req, res) => {
   const medicoId = req.params.medicoId;
   const fechaSeleccionada = req.query.fecha || new Date().toISOString().split('T')[0]; // Fecha de hoy en formato yyyy-MM-dd
 
   console.log(`Buscando turnos para el turno con ID: ${medicoId} y fecha: ${fechaSeleccionada}`);
   
+  // Llama a la función para cancelar los turnos pasados
+  await this.cancelarTurnosPasados();
+
   // Obtener los datos de los turnos
   const turnos = await turnosModel.getTurnos(medicoId, fechaSeleccionada);
   console.log('Datos obtenidos:', turnos);

@@ -8,5 +8,6 @@ block content
     label.loginC(for="contraseña") Contraseña:
     input.loginE(type="password" name="password" placeholder="Contraseña" required)
     button.login(type="submit") Ingresar  
-  if message
-      p= message
+    if message
+      p.error-message= message  
+  
