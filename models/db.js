@@ -2,14 +2,14 @@
 const mysql = require('mysql2');
 
 // Configuración de la conexión MySQL
-const pool = mysql.createPool({
+const conexion = mysql.createConnection({
   host: process.env.DB_HOST ||'localhost',
   user: process.env.DB_USER || 'root', 
   password: process.env.DB_PASSWORD || '', 
-  database: process.env.DB_DATABASE || 'atencion_medica',
+  database: process.env.DB_NAME || 'atencion_medica',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
 });
 
-module.exports = pool.promise();
+module.exports = conexion.promise();
