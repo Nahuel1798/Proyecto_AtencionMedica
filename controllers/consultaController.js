@@ -1,9 +1,10 @@
+// controllers/consultaController.js
 const consultaModel = require('../models/consultaModel');
 
 exports.formularioConsulta = async (req, res) => {
   const turnoId = req.params.turnoId;
   const pacienteId = req.params.pacienteId;
-  const medicoId = req.session.medicoId;
+  const medicoId = req.params.medicoId;
 
   console.log(`Buscando historial clínico para el turno con ID: ${turnoId}`);
   console.log(`Buscando historial clínico para el paciente con ID: ${pacienteId}`);
@@ -32,7 +33,7 @@ exports.formularioConsulta = async (req, res) => {
 exports.guardarConsulta = async (req, res) => {
   const turnoId = req.params.turnoId;
   const pacienteId = req.params.pacienteId;
-  const medicoId = req.session.medicoId;
+  const medicoId = req.params.medicoId;
   const { 
     diagnostico, tipo_diagnostico, evolucion, fecha_evolucion, alergias, importancia_alergia, antecedentes, 
     fecha_desde_antecedentes, fecha_hasta_antecedentes, habitos, fecha_desde_habitos, fecha_hasta_habitos, medicamentos_nombre,
