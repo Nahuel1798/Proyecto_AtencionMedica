@@ -529,3 +529,32 @@ tbody tr:hover {
 .agenda .historial-link a:hover {
   background-color: #4cae4c;
 }
+
+/*estilo nuevo-turno*/
+form.nuevo {
+  background-color: #3498db;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 1.5rem;
+}
+
+div.form-group{
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+

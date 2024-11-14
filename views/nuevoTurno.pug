@@ -1,0 +1,32 @@
+extends layout
+
+block content
+  h1 Agregar Nuevo Turno
+
+  form.nuevo(method="POST", action="/nuevo-turno")
+    input(type="hidden", name="id_medico" value=medicoId)
+
+    div.form-group
+      label(for="fecha") Fecha del Turno:
+      input(type="date", name="fecha" required)
+
+    div.form-group
+      label(for="hora") Hora del Turno:
+      input(type="time", name="hora" required)
+
+    div.form-group
+      label(for="motivo") Motivo del Turno:
+      input(type="text", name="motivo" required)
+
+    div.form-group
+      label(for="id_paciente") Paciente:
+      input(type="number", name="id_paciente" placeholder="ID del paciente" required)
+
+    div.form-group
+      label(for="id_estado") Estado:
+      select(name="id_estado" required)
+        option(value="1") Pendiente
+        option(value="2") Confirmado
+        option(value="3") Cancelado
+
+    button(type="submit") Crear Turno

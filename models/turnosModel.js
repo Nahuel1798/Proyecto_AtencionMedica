@@ -23,6 +23,22 @@ module.exports = {
     return turnos;
   },
 
+  obtenerAgendaPorMedico: async (medicoId) => {
+    const [agenda] = await db.execute(`
+      SELECT id_agenda FROM agenda WHERE id_medico = ?
+    `, [medicoId]);
+    return agenda[0];
+  },
+
+  crearTurno: async (fecha, hora, motivo, id_agenda, id_paciente, id_estado) => {
+    const [result] = await db.execute(`
+      INSERT INTO turno (fecha_turno, hora_turno, motivo_consulta, id_agenda, id_paciente, id_estado) 
+      VALUES (?, ?, ?, ?, ?, ?)
+    `, [fecha, hora, motivo, id_agenda, id_paciente, id_estado]);
+
+    return result;
+  },
+
   marcarConsultaAtendida: async (turnoId) => {
     const [result] = await db.execute(`
       UPDATE turno

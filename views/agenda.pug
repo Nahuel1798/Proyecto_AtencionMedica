@@ -3,6 +3,9 @@ extends layout
 block content
   div.agenda
     h1 Agenda del Médico
+    div.boton-agregar-turno
+      a(href=`/nuevo-turno`) Agregar Turno
+
     // Campo de selección de fecha y botón de búsqueda
     form.agenda(method="GET", action=`/agenda/${medicoId}`)
       div.fecha

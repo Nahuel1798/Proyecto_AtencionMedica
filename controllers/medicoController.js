@@ -73,17 +73,26 @@ exports.agenda = async (req, res) => {
   });
 };
 
-exports.realizarConsulta = async (req, res) => {
-  const turnoId = req.params.turnoId;
+exports.nuevoTurnoPage = (req, res) => {
+  res.render('nuevoTurno', { medicoId: req.session.medicoId });
+};
 
-  // Actualizar el estado del turno a "Atendido"
-  const result = await turnosModel.marcarConsultaAtendida(turnoId);
+exports.crearTurno = async (req, res) => {
+  const { fecha, hora, motivo, id_paciente, id_estado } = req.body;
+  const medicoId = req.session.medicoId;
+
+  const agenda = await turnosModel.obtenerAgendaPorMedico(medicoId);
+  if (!agenda) {
+    return res.status(400).send('No se encontró una agenda para este médico.');
+  }
+
+  const result = await turnosModel.crearTurno(fecha, hora, motivo, agenda.id_agenda, id_paciente, id_estado);
 
   if (result.affectedRows > 0) {
-    // Redirigir de vuelta a la agenda con el estado actualizado
-    res.redirect('/agenda');
+    res.redirect(`/agenda/${medicoId}`);
   } else {
-    // Si hubo un error al actualizar, mostrar un mensaje
-    res.status(500).send('Error al marcar el turno como atendido.');
+    res.status(500).send('Error al crear el turno.');
   }
 };
+
+
