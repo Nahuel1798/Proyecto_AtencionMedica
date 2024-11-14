@@ -7,17 +7,11 @@ exports.loginPage = (req, res) => {
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
-
-  // Adjust the column name in the query if needed (e.g., to 'contrasena' if that's the actual name).
   const [rows] = await db.execute('SELECT * FROM medico WHERE email = ? AND contraseña = ?', [email, password]);
-  
-  // Debugging output
   console.log('Query result:', rows);
   
   if (rows.length > 0) {
     const medico = rows[0];
-    
-    // Save medico ID in session
     req.session.medicoId = medico.id_medico;
     res.redirect(`/agenda/${medico.id_medico}`);
   } else {
