@@ -19,9 +19,15 @@ block content
 
         //- Evolución
         div
-          label(for="evolucion") Evolución: 
-          textarea(name='evolucion' id='evolucion' rows="4" cols="50" required)
-
+          label(for="evolucion") Evolución:
+          textarea#editor(name='evolucion' rows="4" cols="50" required)
+          script(src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js")
+          script.
+            document.addEventListener("DOMContentLoaded", function() {
+              const quill = new Quill('#editor', {
+                theme: 'snow'
+              });
+            });
         div
           label(for="fecha_evolucion") Fecha de Evolución: 
           input(type='date' name='fecha_evolucion' id='fecha_evolucion' required)
