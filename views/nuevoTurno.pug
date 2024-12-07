@@ -1,6 +1,10 @@
-extends layout
-
-block content
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet")
+  body
   h1 Agregar Nuevo Turno
 
   form.nuevo(method="POST", action="/nuevo-turno")
@@ -30,3 +34,6 @@ block content
         option(value="3") Cancelado
 
     button(type="submit") Crear Turno
+    a.consulta(href=`/agenda/${medicoId}`) Volver a la agenda
+      
+

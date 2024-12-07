@@ -1,6 +1,10 @@
-extends layout
-
-block content
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet")
+  body
   div.index 
     h1.index Bienvenido a la Aplicación de Agenda Médica
     p.index Aquí podrás gestionar tus turnos y consultas.

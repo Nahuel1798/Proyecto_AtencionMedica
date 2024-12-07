@@ -1,55 +1,83 @@
-extends layout
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet")  
+  body
+    //barra de navegacion
+    nav.navbar
+      div.navbar-conteiner
+        ul.navbar-list 
+          li
+            a(href="/nuevo-turno") Agregar Turno
+          //- li
+          //-   span.usuario-activo Usuario: #{turno.medico_nombre}
+          li 
+            a(href="/mostrar-consulta") Mostrar consulta 
+          li 
+            a(href="/mostrar-medico") Mostrar Medico
+          li
+            a(href="/logout", class="salir") Salir
+    //Parte principal
+    div.agenda
+      if success
+        p.success= success
+      if error
+        p.error= error
+      h1 Agenda del Médico
 
-block content
-  div.agenda
-    h1 Agenda del Médico
-    div.boton-agregar-turno
-      a(href=`/nuevo-turno`) Agregar Turno
+      // Campo de selección de fecha y botón de búsqueda
+      form.agenda(method="GET", action=`/agenda/${medicoId}`)
+        div.fecha
+          label.agenda(for="fecha") Seleccione una fecha:
+          input.agenda(type="date", id="fecha", name="fecha" value=fechaSeleccionada)
+          button(type="submit") Buscar
 
-    // Campo de selección de fecha y botón de búsqueda
-    form.agenda(method="GET", action=`/agenda/${medicoId}`)
-      div.fecha
-        label.agenda(for="fecha") Seleccione una fecha:
-        input.agenda(type="date", id="fecha", name="fecha" value=fechaSeleccionada)
-        button(type="submit") Buscar
-
-    // Mostrar mensaje si no hay turnos
-    if message
-      p.no-turnos No hay turnos para la fecha seleccionada.
-    else  
-      table
-        thead
-          tr
-            th Nº Turno
-            th Fecha
-            th Hora
-            th Nro paciente
-            th Paciente
-            th Médico
-            th Condicion
-            th Historial 
-            th Consulta
-        tbody
-          each turno in turnos
+      // Mostrar mensaje si no hay turnos
+      if message
+        p.no-turnos No hay turnos para la fecha seleccionada.
+      else  
+        table
+          thead
             tr
-              td= turno.id_turno
-              td= turno.fecha_turno
-              td= turno.hora_turno
-              td= turno.id_paciente
-              td= turno.paciente_nombre
-              td= turno.medico_nombre
-              td(class= 
-                turno.estado === 'Pendiente' ? 'estado-pendiente' :
-                turno.estado === 'Confirmado' ? 'estado-confirmado' :
-                turno.estado === 'Cancelado' ? 'estado-cancelado' :
-                ''
-              )= turno.estado
-              //td= turno.estado
-              td
-                a(href=`/historial/${turno.id_paciente}`) Ver Historial
-              td 
-                if turno.estado === 'Pendiente'
-                  a(href=`/consulta/${turno.id_turno}/${turno.id_paciente}`) Realizar Consulta
-                  br
-                if turno.estado === 'Atendido'
-                  a.button(href=`/historial/${turno.id_turno}`) Ver Historial
+              th Nº Turno
+              th Fecha
+              th Hora
+              th Nro paciente
+              th Paciente
+              th Médico
+              th Condicion
+              th Historial 
+              th Consulta
+              th Cancelar
+          tbody
+            each turno in turnos
+              tr
+                td= turno.id_turno
+                td= turno.fecha_turno
+                td= turno.hora_turno
+                td= turno.id_paciente
+                td= turno.paciente_nombre
+                td= turno.medico_nombre
+                td(class= 
+                  turno.estado === 'Pendiente' ? 'estado-pendiente' :
+                  turno.estado === 'Confirmado' ? 'estado-confirmado' :
+                  turno.estado === 'Cancelado' ? 'estado-cancelado' :
+                  ''
+                )= turno.estado
+                //td= turno.estado
+                td
+                  a(href=`/historial/${turno.id_paciente}`) Ver Historial
+                td 
+                  if turno.estado === 'Pendiente'
+                    a(href=`/consulta/${turno.id_turno}/${turno.id_paciente}`) Realizar Consulta
+                    br
+                  if turno.estado === 'Atendido'
+                    a.button(href=`/historial/${turno.id_turno}`) Ver Historial
+                td
+                  if turno.estado === 'Pendiente'
+                    form(method="POST", action="/cancelar-turno")
+                      input(type="hidden", name="turnoId", value=turno.id_turno)
+                      button(type="submit", class="btn-cancelar") Cancelar
+

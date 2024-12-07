@@ -1,0 +1,101 @@
+doctype html
+html
+  head
+    title Modificar Consulta
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.min.js")
+  body
+    h1 Modificar Última Consulta 
+
+    // Botón para volver al historial clínico
+    div.hce
+      a.button(href=`/historial/${pacienteId}`) Volver al Historial Clínico
+
+    if successMessage
+      div.alert.alert-success
+        | #{successMessage}
+
+    form.modificar(method='POST', action=`/actualizarConsulta/${consulta.id_consulta}`)
+      // Diagnóstico
+      div.form-group
+        label(for='diagnostico') Diagnóstico
+        textarea#diagnostico.form-control(name='diagnostico', required=true)= consulta.diagnostico || ''
+
+      div.form-group
+        label(for='tipo_diagnostico') Tipo de Diagnóstico
+        input#tipo_diagnostico.form-control(type='text', name='tipo_diagnostico', value=consulta.tipo_diagnostico || '', required=true)
+
+      // Evolución
+      div.form-group
+        label(for='evolucion') Evolución
+        textarea#evolucion.form-control(name='evolucion')= consulta.evolucion || ''
+
+      div.form-group
+        label(for='fecha_evolucion') Fecha de Evolución
+        input#fecha_evolucion.form-control(type='date', name='fecha_evolucion', value=consulta.fecha_evolucion ? consulta.fecha_evolucion.toISOString().split('T')[0] : '')
+
+      // Alergias
+      div.form-group
+        label(for='alergias') Alergias
+        input#alergias.form-control(type='text', name='alergias', value=consulta.alergias || '')
+
+      //- div.form-group
+      //-   label(for='importancia_alergia') Importancia de la Alergia
+      //-   select#importancia_alergia.form-control(name='importancia_alergia')
+      //-     option(value='') Seleccione una opción
+      //-     each importancia in importancias
+      //-       if consulta.importancia_alergia === importancia.id
+      //-         option(value=importancia.id, selected=true)= importancia.descripcion
+      //-       else
+      //-         option(value=importancia.id)= importancia.descripcion
+
+      div.form-group
+        label(for='alergia_fecha_desde') Fecha Desde Alergia
+        input#alergia_fecha_desde.form-control(type='date', name='alergia_fecha_desde', value=consulta.alergia_fecha_desde ? consulta.alergia_fecha_desde.toISOString().split('T')[0] : '')
+
+      div.form-group
+        label(for='alergia_fecha_hasta') Fecha Hasta Alergia
+        input#alergia_fecha_hasta.form-control(type='date', name='alergia_fecha_hasta', value=consulta.alergia_fecha_hasta ? consulta.alergia_fecha_hasta.toISOString().split('T')[0] : '')
+
+      // Antecedentes
+      div.form-group
+        label(for='antecedentes') Antecedentes Patológicos
+        textarea#antecedentes.form-control(name='antecedentes')= consulta.antecedentes || ''
+
+      div.form-group
+        label(for='fecha_desde_antecedentes') Fecha Desde Antecedentes
+        input#fecha_desde_antecedentes.form-control(type='date', name='fecha_desde_antecedentes', value=consulta.fecha_desde_antecedentes ? consulta.fecha_desde_antecedentes.toISOString().split('T')[0] : '')
+
+      div.form-group
+        label(for='fecha_hasta_antecedentes') Fecha Hasta Antecedentes
+        input#fecha_hasta_antecedentes.form-control(type='date', name='fecha_hasta_antecedentes', value=consulta.fecha_hasta_antecedentes ? consulta.fecha_hasta_antecedentes.toISOString().split('T')[0] : '')
+
+      // Hábitos
+      div.form-group
+        label(for='habitos') Hábitos
+        textarea#habitos.form-control(name='habitos')= consulta.habitos || ''
+
+      div.form-group
+        label(for='fecha_desde_habitos') Fecha Desde Hábitos
+        input#fecha_desde_habitos.form-control(type='date', name='fecha_desde_habitos', value=consulta.fecha_desde_habitos ? consulta.fecha_desde_habitos.toISOString().split('T')[0] : '')
+
+      div.form-group
+        label(for='fecha_hasta_habitos') Fecha Hasta Hábitos
+        input#fecha_hasta_habitos.form-control(type='date', name='fecha_hasta_habitos', value=consulta.fecha_hasta_habitos ? consulta.fecha_hasta_habitos.toISOString().split('T')[0] : '')
+
+      // Medicamentos
+      div.form-group
+        label(for='medicamentos_nombre') Medicamentos en uso
+        input#medicamentos_nombre.form-control(type='text', name='medicamentos_nombre', value=consulta.medicamento || '')
+
+      div.form-group
+        label(for='medicamentos_dosis') Dosis
+        input#medicamentos_dosis.form-control(type='text', name='medicamentos_dosis', value=consulta.medicamentos_dosis || '')
+
+      div.form-group
+        label(for='medicamentos_frecuencia') Frecuencia
+        input#medicamentos_frecuencia.form-control(type='text', name='medicamentos_frecuencia', value=consulta.medicamentos_frecuencia || '')
+
+      // Botón de envío
+      div.form-group
+        button.btn.btn-primary(type='submit') Actualizar Consulta

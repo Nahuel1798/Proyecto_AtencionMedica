@@ -1,3 +1,4 @@
+//models/turnosModel.js
 const db = require('./db');
 
 module.exports = {
@@ -38,6 +39,28 @@ module.exports = {
 
     return result;
   },
+
+  obtenerTurnoPorId : async (turnoId) => {
+    const [rows] = await db.execute(`
+      SELECT t.id_turno, t.id_agenda, t.id_estado,a.id_medico
+      FROM turno t
+      JOIN agenda a ON t.id_agenda=a.id_agenda
+      WHERE id_turno = ?
+    `, [turnoId]);
+  
+    return rows[0]; // Retorna el primer resultado o undefined si no existe
+  },
+  
+  marcarTurnoCancelado : async (turnoId) => {
+    const [result] = await db.execute(`
+      UPDATE turno
+      SET id_estado = 3
+      WHERE id_turno = ?
+    `, [turnoId]);
+  
+    return result;
+  },
+
 
   marcarConsultaAtendida: async (turnoId) => {
     const [result] = await db.execute(`

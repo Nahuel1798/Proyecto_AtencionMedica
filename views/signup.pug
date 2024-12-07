@@ -1,0 +1,22 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet")
+  body
+    form.signup(action="/signup" method="POST")
+        h1.signup Crear una cuenta
+        label.signupC(for="nombre") Nombre:
+        input.signupE(type="text" name="nombre" placeholder="Tu nombre" required)
+        label.signupC(for="especialidad") Especialidad:
+        input.signupE(type="text" name="especialidad" placeholder="Tu especialidad" required)
+        label.signupC(for="email") Email:
+        input.signupE(type="email" name="email" placeholder="Tu correo electrónico" required)
+        label.signupC(for="password") Contraseña:
+        input.signupE(type="password" name="password" placeholder="Crea una contraseña" required)
+        div.button-group
+          button.signup(type="submit") Registrarse
+          a.button-login(href="/login") Volver al login
+        if error
+            p.error-message= error

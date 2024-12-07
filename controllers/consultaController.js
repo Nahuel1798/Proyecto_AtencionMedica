@@ -4,7 +4,7 @@ const consultaModel = require('../models/consultaModel');
 exports.formularioConsulta = async (req, res) => {
   const turnoId = req.params.turnoId;
   const pacienteId = req.params.pacienteId;
-  const medicoId = req.params.medicoId;
+  const medicoId = req.session.medicoId;
 
   console.log(`Buscando historial clínico para el turno con ID: ${turnoId}`);
   console.log(`Buscando historial clínico para el paciente con ID: ${pacienteId}`);
@@ -33,7 +33,7 @@ exports.formularioConsulta = async (req, res) => {
 exports.guardarConsulta = async (req, res) => {
   const turnoId = req.params.turnoId;
   const pacienteId = req.params.pacienteId;
-  const medicoId = req.params.medicoId;
+  const medicoId = req.session.medicoId;
   const { 
     diagnostico, tipo_diagnostico, evolucion, fecha_evolucion, alergias, importancia_alergia, antecedentes, 
     fecha_desde_antecedentes, fecha_hasta_antecedentes, habitos, fecha_desde_habitos, fecha_hasta_habitos, medicamentos_nombre,
@@ -89,23 +89,6 @@ exports.guardarConsulta = async (req, res) => {
   } catch (error) {
     console.error('Error al guardar la consulta:', error);
     res.status(500).send('Error al guardar la consulta');
-  }
-};
-
-// Cancelar consulta
-exports.cancelarConsulta = async (req, res) => {
-  const turnoId = req.params.turnoId;
-  const pacienteId = req.params.pacienteId;
-
-  try {
-    // Actualizar el estado de la consulta a "Cancelado"
-    await consultaModel.cancelarConsulta(turnoId);
-
-    // Redirigir a la agenda o al historial con un mensaje de éxito
-    res.redirect(`/agenda/${req.session.medicoId}`);
-  } catch (error) {
-    console.error('Error al cancelar la consulta:', error);
-    res.status(500).send('Error al cancelar la consulta');
   }
 };
 

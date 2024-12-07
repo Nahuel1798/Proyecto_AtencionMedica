@@ -1,24 +1,65 @@
-extends layout
+//- doctype html
+//- html
+//-   head
+//-     title= title
+//-     link(rel='stylesheet', href='/stylesheets/style.css')
+//-     link(href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet")
+//-   body
+//-     h1 Historial Clínico de #{consulta[0].paciente_nombre || 'Paciente No Encontrado'}
+//-     // Botón para volver a la agenda
+//-     div.hce
+//-       a.button(href=`/agenda/${medicoId}`) Volver a la agenda
+//-     if consulta
+//-       each consultas in consulta
+//-         div.hce
+//-           h2 Consulta realizada el #{consultas.fecha_consulta} #{consultas.hora}
+//-           p Medico a cargo: #{consultas.medico || 'No disponible'}
+//-           p Diagnóstico: #{consultas.diagnostico || 'No disponible'}
+//-           p Evolución: #{consultas.evolucion || 'No disponible'}
+//-           p Alergias: #{consultas.alergias || 'No disponible'}
+//-           p Antecedentes Patológicos: #{consultas.antecedentes || 'No disponible'}
+//-           p Hábitos: #{consultas.habitos || 'No disponible'}
+//-           p Medicamentos en uso: #{consultas.medicamento || 'No disponible'}
+//-           hr
+//-     else
+//-       p No se encontraron datos del historial clínico.
 
-block content
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet")
+  body
     h1 Historial Clínico de #{consulta[0].paciente_nombre || 'Paciente No Encontrado'}
+
     // Botón para volver a la agenda
-    div
+    div.hce
       a.button(href=`/agenda/${medicoId}`) Volver a la agenda
-    if consulta
-      each consultas in consulta
-        div.consulta
-          h2 Consulta realizada el #{consultas.fecha_consulta} #{consultas.hora}
-          p Medico a cargo: #{consultas.medico || 'No disponible'}
-          p Diagnóstico: #{consultas.diagnostico || 'No disponible'}
-          p Evolución: #{consultas.evolucion || 'No disponible'}
-          p Alergias: #{consultas.alergias || 'No disponible'}
-          p Antecedentes Patológicos: #{consultas.antecedentes || 'No disponible'}
-          p Hábitos: #{consultas.habitos || 'No disponible'}
-          p Medicamentos en uso: #{consultas.medicamento || 'No disponible'}
+
+    // Última consulta
+    if ultimaConsulta
+      div.hce
+        h2 Última Consulta - #{ultimaConsulta.fecha_consulta} #{ultimaConsulta.hora}
+        p Medico a cargo: #{ultimaConsulta.medico || 'No disponible'}
+        p Diagnóstico: #{ultimaConsulta.diagnostico || 'No disponible'}
+        p Evolución: #{ultimaConsulta.evolucion || 'No disponible'}
+        p Alergias: #{ultimaConsulta.alergias || 'No disponible'}
+        p Antecedentes Patológicos: #{ultimaConsulta.antecedentes || 'No disponible'}
+        p Hábitos: #{ultimaConsulta.habitos || 'No disponible'}
+        p Medicamentos en uso: #{ultimaConsulta.medicamento || 'No disponible'}
+        a.button(href=`/modificarConsulta/${ultimaConsulta.id_consulta}`) Modificar Consulta
+        hr
+
+    // Consultas atendidas por otros médicos
+    if consultasOtrosMedicos && consultasOtrosMedicos.length > 0
+      h2 Consultas realizadas por otros médicos
+      each consulta in consultasOtrosMedicos
+        div.hce
+          h3 Consulta el #{consulta.fecha_consulta}
+          p Médico: #{consulta.medico}
+          p Diagnóstico: #{consulta.diagnostico || 'No disponible'}
           hr
     else
-      p No se encontraron datos del historial clínico.
-
-    
+      p No se encontraron consultas realizadas por otros médicos.
     

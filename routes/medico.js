@@ -6,6 +6,10 @@ const medicoController = require('../controllers/medicoController');
 router.get('/login', medicoController.loginPage);
 router.post('/login', medicoController.login);
 
+router.get('/signup', medicoController.signupPage);
+router.post('/signup', medicoController.signup);
+
+
 // Ruta protegida para la agenda del médico
 router.get('/agenda/:medicoId', (req, res, next) => {
     if (!req.session.medicoId) {
@@ -15,7 +19,11 @@ router.get('/agenda/:medicoId', (req, res, next) => {
     next();
   }, medicoController.agenda);
 
-router.get('/nuevo-turno', medicoController.isAuthenticated, medicoController.nuevoTurnoPage);
-router.post('/nuevo-turno', medicoController.isAuthenticated, medicoController.crearTurno);
+router.get('/nuevo-turno',  medicoController.nuevoTurnoPage);
+router.post('/nuevo-turno', medicoController.crearTurno);
+
+router.get('/logout', medicoController.logout);
+
+router.post('/cancelar-turno', medicoController.cancelarTurno);
 
 module.exports = router;

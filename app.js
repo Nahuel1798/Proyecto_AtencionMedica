@@ -39,19 +39,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// // Configuración de la sesión
-// app.use(session({
-//   secret: 'medicoApp',
-//   resave: false,
-//   saveUninitialized: true,
-// }));
-
-// // Middleware de autenticación
-// app.use((req, res, next) => {
-//   res.locals.medicoId = req.session.medicoId; // Acceso al `medicoId` en las vistas
-//   next();
-// });
-
 // Rutas
 app.use('/', indexRouter);
 app.use('/', medicoRoutes);
