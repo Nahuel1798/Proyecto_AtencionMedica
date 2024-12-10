@@ -172,8 +172,6 @@ exports.cancelarTurno = async (req, res) => {
   }
 };
 
-
-
 exports.nuevoTurnoPage = (req, res) => {
   res.render('nuevoTurno', { medicoId: req.session.medicoId });
 };

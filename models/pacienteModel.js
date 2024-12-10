@@ -9,7 +9,7 @@ module.exports = {
         c.hora_consulta, 
         d.descripcion AS diagnostico, 
         e.resumen_atencion AS evolucion, 
-        a.nombre AS alergias, 
+        a.tipo_alergia AS alergias, 
         an.descripcion AS antecedentes, 
         h.descripcion AS habitos, 
         m.nombre AS medicamento,
@@ -35,13 +35,14 @@ module.exports = {
   },
 
   getUltimaConsulta: async (consultaId) => {
-    const [consulta] = await db.execute(`
+    const [consultas] = await db.execute(`
       SELECT 
         c.fecha_consulta,
         c.hora_consulta, 
+        c.id_paciente,
         d.descripcion AS diagnostico, 
         e.resumen_atencion AS evolucion, 
-        a.nombre AS alergias, 
+        a.tipo_alergia AS alergias, 
         an.descripcion AS antecedentes, 
         h.descripcion AS habitos, 
         m.nombre AS medicamento,
@@ -61,50 +62,54 @@ module.exports = {
       WHERE c.id_consulta = ?
     `, [consultaId]);
 
-    return consulta;
+    return consultas;
   },
+
+  // Actualizar Consulta
+  
+
+  // Tipo Diagnostico
+  obtenerTiposDiagnostico: async () => {
+    const [result] = await db.execute(`
+      SELECT 
+        id_tipo_diagnostico, 
+        descripcion 
+      FROM 
+        tipo_diagnostico;
+    `);
+    console.log('Tipos de diagnóstico obtenidos:', result);
+    return result;
+  },
+
 
   // Actualizar Diagnóstico
   actualizarDiagnostico: async (consultaId, diagnostico, tipoDiagnostico) => {
-    // Primero, verifica si ya existe un diagnóstico para esta consulta
-    const [existing] = await db.execute(
-      'SELECT * FROM diagnostico WHERE id_consulta = ?',
-      [consultaId]
-    );
-
-    if (existing.length > 0) {
-      // Actualizar el diagnóstico existente
-      await db.execute(
-        'UPDATE diagnostico SET descripcion = ?, tipo_diagnostico = ? WHERE id_consulta = ?',
-        [diagnostico, tipoDiagnostico, consultaId]
-      );
-    } else {
-      // Insertar un nuevo diagnóstico
-      await db.execute(
-        'INSERT INTO diagnostico (id_consulta, descripcion, tipo_diagnostico) VALUES (?, ?, ?)',
-        [consultaId, diagnostico, tipoDiagnostico]
-      );
-    }
+    const [result] = await db.execute(
+      'UPDATE diagnostico SET descripcion = ?, tipo_diagnostico = ? WHERE id_consulta = ?'
+      , [diagnostico, tipoDiagnostico, consultaId]);
+    return result;
   },
 
   // Actualizar Evolución
   actualizarEvolucion: async (consultaId, evolucion, fechaEvolucion) => {
-    const [existing] = await db.execute(
-      'SELECT * FROM evolucion WHERE id_consulta = ?',
-      [consultaId]
-    );
+    const [result] = await db.execute(
+      'UPDATE evolucion SET resumen_atencion = ?, fecha_evolucion = ? WHERE id_consulta = ?'
+      , [evolucion, fechaEvolucion, consultaId]);
 
-    if (existing.length > 0) {
-      await db.execute(
-        'UPDATE evolucion SET fecha_evolucion = ?, resumen_atencion = ? WHERE id_consulta = ?',
-        [fechaEvolucion, evolucion,  consultaId]
-      );
-    } else {
-      await db.execute(
-        'INSERT INTO evolucion (id_consulta, resumen_atencion, fecha_evolucion) VALUES (?, ?, ?)',
-        [consultaId, evolucion, fechaEvolucion]
-      );
-    }
+    return result;
+  },
+
+  //Obtener tipos de alergias
+  obtenerTiposAlergias: async () => {
+    const [result] = await db.execute(`
+      SELECT 
+        id_tipo_alergia, 
+        descripcion 
+      FROM 
+        tipo_alergia;
+    `);
+    console.log('Tipos de alergias obtenidos:', result);
+    return result;
   },
 
   //elegir importancia de alergia
@@ -121,82 +126,42 @@ module.exports = {
   },
 
   // Actualizar Alergias
-  actualizarAlergias: async (consultaId, alergias, fechaDesde, fechaHasta, importancia) => {
-    const [existing] = await db.execute(
-      'SELECT * FROM alergia WHERE id_consulta = ?',
-      [consultaId]
+  actualizarAlergias: async (consultaId, tipo_alergias, fechaDesde, fechaHasta, importancia) => {
+    const [result] = await db.execute(
+      'UPDATE alergia SET tipo_alergia = ?, fecha_desde = ?, fecha_hasta = ?, importancia = ? WHERE id_consulta = ?',
+      [tipo_alergias, fechaDesde, fechaHasta, importancia, consultaId]
     );
 
-    if (existing.length > 0) {
-      await db.execute(
-        'UPDATE alergia SET nombre = ?, fecha_desde = ?, fecha_hasta = ?, importancia = ? WHERE id_consulta = ?',
-        [alergias, fechaDesde, fechaHasta, importancia, consultaId]
-      );
-    } else {
-      await db.execute(
-        'INSERT INTO alergia (id_consulta, nombre, fecha_desde, fecha_hasta, importancia) VALUES (?, ?, ?, ?, ?)',
-        [consultaId, alergias, fechaDesde, fechaHasta, importancia]
-      );
-    }
+    return result;
   },
 
   // Actualizar Antecedentes
   actualizarAntecedentes: async (consultaId, antecedentes, fechaDesde, fechaHasta) => {
-    const [existing] = await db.execute(
-      'SELECT * FROM antecedentes WHERE id_consulta = ?',
-      [consultaId]
+    const [result] = await db.execute(
+      'UPDATE antecedentes SET descripcion = ?, fecha_desde = ?, fecha_hasta = ? WHERE id_consulta = ?',
+      [antecedentes, fechaDesde, fechaHasta, consultaId]
     );
 
-    if (existing.length > 0) {
-      await db.execute(
-        'UPDATE antecedentes SET descripcion = ?, fecha_desde = ?, fecha_hasta = ? WHERE id_consulta = ?',
-        [antecedentes, fechaDesde, fechaHasta, consultaId]
-      );
-    } else {
-      await db.execute(
-        'INSERT INTO antecedentes (id_consulta, descripcion, fecha_desde, fecha_hasta) VALUES (?, ?, ?, ?)',
-        [consultaId, antecedentes, fechaDesde, fechaHasta]
-      );
-    }
+    return result;
   },
 
   // Actualizar Hábitos
   actualizarHabitos: async (consultaId, habitos, fechaDesde, fechaHasta) => {
-    const [existing] = await db.execute(
-      'SELECT * FROM habito WHERE id_consulta = ?',
-      [consultaId]
+    const [result] = await db.execute(
+      'UPDATE habito SET descripcion = ?, fecha_desde = ?, fecha_hasta = ? WHERE id_consulta = ?',
+      [habitos, fechaDesde, fechaHasta, consultaId]
     );
 
-    if (existing.length > 0) {
-      await db.execute(
-        'UPDATE habito SET descripcion = ?, fecha_desde = ?, fecha_hasta = ? WHERE id_consulta = ?',
-        [habitos, fechaDesde, fechaHasta, consultaId]
-      );
-    } else {
-      await db.execute(
-        'INSERT INTO habito (id_consulta, descripcion, fecha_desde, fecha_hasta) VALUES (?, ?, ?, ?)',
-        [consultaId, habitos, fechaDesde, fechaHasta]
-      );
-    }
+    return result;
   },
 
   // Actualizar Medicamentos
   actualizarMedicamentos: async (consultaId, medicamentosNombre, medicamentosDosis, medicamentosFrecuencia) => {
     const [existing] = await db.execute(
-      'SELECT * FROM medicamentos WHERE id_consulta = ?',
-      [consultaId]
+      'UPDATE medicamentos SET nombre = ?, dosis = ?, frecuencia = ? WHERE id_consulta = ?',
+        [medicamentosNombre, medicamentosDosis, medicamentosFrecuencia, consultaId]
     );
 
-    if (existing.length > 0) {
-      await db.execute(
-        'UPDATE medicamentos SET nombre = ?, dosis = ?, frecuencia = ? WHERE id_consulta = ?',
-        [medicamentosNombre, medicamentosDosis, medicamentosFrecuencia, consultaId]
-      );
-    } else {
-      await db.execute(
-        'INSERT INTO medicamentos (id_consulta, nombre, dosis, frecuencia) VALUES (?, ?, ?, ?)',
-        [consultaId, medicamentosNombre, medicamentosDosis, medicamentosFrecuencia]
-      );
-    }
+    return existing;
   },
 };

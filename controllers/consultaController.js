@@ -18,11 +18,17 @@ exports.formularioConsulta = async (req, res) => {
       return res.status(404).send('Turno no encontrado');
     }
 
+    const tiposDiagnostico = await consultaModel.obtenerTiposDiagnostico();
+    console.log('Tipos de diagnóstico obtenidos:', tiposDiagnostico);
+
     const importancias = await consultaModel.obtenerImportanciaAlergia();
     console.log('Importancias obtenidas:', importancias);
+
+    const tiposAlergias = await consultaModel.obtenerTiposAlergias();
+    console.log('Tipos de alergias obtenidos:', tiposAlergias);
     
     // Renderizar la vista del formulario con los detalles del turno
-    res.render('consulta', { turno: turno, importancias: importancias, medicoId: medicoId });
+    res.render('consulta', { turno: turno, importancias: importancias, medicoId: medicoId, tiposDiagnostico: tiposDiagnostico, tiposAlergias: tiposAlergias });
   } catch (error) {
     console.error('Error al cargar el formulario:', error);
     res.status(500).send('Error al cargar el formulario');
@@ -35,7 +41,7 @@ exports.guardarConsulta = async (req, res) => {
   const pacienteId = req.params.pacienteId;
   const medicoId = req.session.medicoId;
   const { 
-    diagnostico, tipo_diagnostico, evolucion, fecha_evolucion, alergias, importancia_alergia, antecedentes, 
+    diagnostico, tipo_diagnostico, evolucion, fecha_evolucion, importancia_alergia, tipos_alergias, antecedentes, 
     fecha_desde_antecedentes, fecha_hasta_antecedentes, habitos, fecha_desde_habitos, fecha_hasta_habitos, medicamentos_nombre,
     medicamentos_dosis, medicamentos_frecuencia,alergia_fecha_desde, alergia_fecha_hasta} = req.body;
 
@@ -52,8 +58,8 @@ exports.guardarConsulta = async (req, res) => {
     await consultaModel.guardarEvolucion(consultaResult.insertId, evolucion, fecha_evolucion);
 
     // Paso 4: Guardar alergias
-    if (alergias) {
-      await consultaModel.guardarAlergias(consultaResult.insertId, alergias, alergia_fecha_desde, alergia_fecha_hasta, importancia_alergia);
+    if (tipos_alergias) {
+      await consultaModel.guardarAlergias(consultaResult.insertId, tipos_alergias, alergia_fecha_desde, alergia_fecha_hasta, importancia_alergia);
     }
 
     // Paso 5: Guardar antecedentes
@@ -77,13 +83,17 @@ exports.guardarConsulta = async (req, res) => {
     // Volver a obtener detalles del turno y las importancias, necesarios para la vista de consulta
     const turno = await consultaModel.obtenerTurno(turnoId, pacienteId);
     const importancias = await consultaModel.obtenerImportanciaAlergia();
+    const tiposAlergias = await consultaModel.obtenerTiposAlergias();
+    const tiposDiagnostico = await consultaModel.obtenerTiposDiagnostico();
 
     // Renderizar la vista con el mensaje de éxito y los datos necesarios
     res.render('consulta', {
       successMessage: 'Consulta guardada exitosamente',
       turno: turno,
       importancias: importancias,
-      medicoId: medicoId
+      medicoId: medicoId,
+      tiposAlergias: tiposAlergias,
+      tiposDiagnostico: tiposDiagnostico
     });
     
   } catch (error) {

@@ -19,7 +19,12 @@ html
 
         div.consulta
           label(for='tipo_diagnostico') Tipo de Diagnóstico:
-          input(type='text' name='tipo_diagnostico' id='tipo_diagnostico' required)
+          select(name='tipo_diagnostico' id='tipo_diagnostico' required)
+            if tiposDiagnostico.length > 0
+              each tipo in tiposDiagnostico
+                option.consulta(value=tipo.id_tipo_diagnostico) #{tipo.descripcion}
+            else 
+              option(value="") no hay tipos disponible
 
         //- Evolución
         div.consulta
@@ -40,8 +45,13 @@ html
       fieldset
         legend Alergias
         div.consulta
-          label(for='alergias') Alergias:
-          textarea(name='alergias' id='alergias' rows="4" cols="50")
+          label(for='tipos_alergias') Alergias:
+          select(name='tipos_alergias' id='tipos_alergias')
+            if tiposAlergias.length > 0
+              each alergias in tiposAlergias
+                option(value=alergias.id_tipo_alergia) #{alergias.descripcion}
+            else 
+              option(value="") No hay alergias disponibles
         div.consulta
           label(for='alergia_fecha_desde') Fecha Desde:
           input(type='date' name='alergia_fecha_desde' id='alergia_fecha_desde')

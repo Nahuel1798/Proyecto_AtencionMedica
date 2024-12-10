@@ -40,11 +40,24 @@ module.exports = {
     `, [turnoId]);
   },
 
-  // Guardar diagnóstico
-  guardarDiagnostico: async (idConsulta, diagnostico, tipo_diagnostico) => {
+  // Tipo Diagnostico
+  obtenerTiposDiagnostico: async () => {
     const [result] = await db.execute(`
-        INSERT INTO diagnostico (id_consulta, descripcion,tipo_diagnostico) VALUES (?, ?, ?)
-    `, [idConsulta, diagnostico,tipo_diagnostico]);
+      SELECT 
+        id_tipo_diagnostico, 
+        descripcion 
+      FROM 
+        tipo_diagnostico;
+    `);
+    console.log('Tipos de diagnóstico obtenidos:', result);
+    return result;
+  },
+
+  // Guardar diagnóstico
+  guardarDiagnostico: async (idConsulta, diagnostico, tiposDiagnostico) => {
+    const [result] = await db.execute(`
+        INSERT INTO diagnostico (id_consulta, descripcion, tipo_diagnostico) VALUES (?, ?, ?)
+    `, [idConsulta, diagnostico,tiposDiagnostico]);
 
     return result;
   },
@@ -71,14 +84,28 @@ module.exports = {
     return result;
   },
 
+  //Obtener tipos de alergias
+  obtenerTiposAlergias: async () => {
+    const [result] = await db.execute(`
+      SELECT 
+        id_tipo_alergia, 
+        descripcion 
+      FROM 
+        tipo_alergia;
+    `);
+    console.log('Tipos de alergias obtenidos:', result);
+    return result;
+  },
+
   // Guardar alergias
-  guardarAlergias: async (idConsulta, alergias,alergia_fecha_desde,alergia_fecha_hasta,importanciaAlergia) => {
+  guardarAlergias: async (idConsulta, tipos_alergias,alergia_fecha_desde,alergia_fecha_hasta,importanciaAlergia) => {
       const [result] = await db.execute(`
-          INSERT INTO alergia (id_consulta, nombre, fecha_desde, fecha_hasta, importancia) VALUES (?, ?, ?, ?, ?)
-      `, [idConsulta, alergias,alergia_fecha_desde,alergia_fecha_hasta,importanciaAlergia]);
+          INSERT INTO alergia (id_consulta, tipo_alergia, fecha_desde, fecha_hasta, importancia) VALUES (?, ?, ?, ?, ?)
+      `, [idConsulta, tipos_alergias,alergia_fecha_desde,alergia_fecha_hasta,importanciaAlergia]);
 
       return result;
   },
+
 
   // Guardar antecedentes
   guardarAntecedentes: async (idConsulta, antecedentes,fecha_desde_antecedentes,fecha_hasta_antecedentes) => {

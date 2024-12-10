@@ -39,54 +39,59 @@ exports.historialClinico = async (req, res) => {
     consulta: consultaFormateada,
     ultimaConsulta,
     consultasOtrosMedicos,
+    pacienteId
   });
 };
 
 // Función para renderizar el formulario de modificación de la última consulta
 exports.modificarConsulta = async (req, res) => {
   const consultaId = req.params.consultaId; // ID de la consulta a modificar
-  const pacienteId = req.session.pacienteId;
-  console.log(`mostrar pacienteId: ${pacienteId}`);
+  const pacienteId = req.params.pacienteId;
   console.log(`mostrar consultaId: ${consultaId}`);
-  const consulta = await pacienteModel.getUltimaConsulta(consultaId); // Obtener los datos de la consulta
+  console.log(`mostrar pacienteId: ${pacienteId}`);
 
-  if (!consulta) {
-    return res.status(404).render('modificarConsulta', {
-      errorMessage: 'La consulta no fue encontrada.',
-      consulta: null,
-    });
+  try {
+    const consultas = await pacienteModel.getUltimaConsulta(consultaId); // Obtener los datos de la consulta
+    console.log('Consulta obtenida:', consultas);
+
+    const importancias = await pacienteModel.obtenerImportanciaAlergia();
+    console.log('Importancias obtenidas:', importancias);
+
+    const tiposAlergias = await pacienteModel.obtenerTiposAlergias();
+    console.log('Tipos de alergias obtenidos:', tiposAlergias);
+
+    const tiposDiagnostico = await pacienteModel.obtenerTiposDiagnostico();
+    console.log('Tipos de diagnóstico obtenidos:', tiposDiagnostico);
+
+    if (!consultas) {
+      return res.status(404).render('modificarConsulta', {
+        errorMessage: 'La consulta no fue encontrada.',
+        consultas: null,
+      });
+    }
+    
+    res.render('modificarConsulta',{consultas: consultas, importancias: importancias, tiposAlergias: tiposAlergias, tiposDiagnostico: tiposDiagnostico, consultaId: consultaId, pacienteId: pacienteId}); 
+  } catch (error) {
+    console.error('Error al cargar el formulario:', error);
+    res.status(500).send('Error al cargar el formulario');
   }
-
-  res.render('modificarConsulta', { 
-    consulta, 
-  });
 };
 
 // Función para manejar la actualización de la consulta
 exports.actualizarConsulta = async (req, res) => {
   const consultaId = req.params.consultaId; // ID de la consulta a modificar
-  const medicoId = req.session.medicoId; // Médico autenticado que realiza la modificación
-  const pacienteId = req.session.pacienteId;
+  const pacienteId = req.params.pacienteId;
+  console.log(`ID de la consulta: ${consultaId}`);
+  console.log(`ID del paciente: ${pacienteId}`);
 
   // Desestructuramos los datos enviados desde el formulario
   const {
-    diagnostico, tipo_diagnostico, evolucion, fecha_evolucion, alergias, importancia_alergia,
+    diagnostico, tipo_diagnostico, evolucion, fecha_evolucion, tipos_alergias, importancia_alergia,
     antecedentes, fecha_desde_antecedentes, fecha_hasta_antecedentes, habitos,
     fecha_desde_habitos, fecha_hasta_habitos, medicamentos_nombre, medicamentos_dosis,
     medicamentos_frecuencia, alergia_fecha_desde,
     alergia_fecha_hasta,
   } = req.body;
-
-  // Validación básica de los datos requeridos
-  if (!diagnostico || !tipo_diagnostico) {
-    return res.status(400).render('modificarConsulta', {
-      errorMessage: 'El diagnóstico y el tipo de diagnóstico son obligatorios.',
-      consulta: null,
-      importancias: await pacienteModel.obtenerImportanciaAlergia(),
-      medicoId,
-      pacienteId,
-    });
-  }
 
   try {
     // Paso 1: Actualizar el diagnóstico
@@ -98,9 +103,9 @@ exports.actualizarConsulta = async (req, res) => {
     }
 
     // Paso 3: Actualizar las alergias
-    if (alergias) {
+    if (tipos_alergias) {
       await pacienteModel.actualizarAlergias(
-        consultaId, alergias, alergia_fecha_desde, alergia_fecha_hasta, importancia_alergia);
+        consultaId, tipos_alergias, alergia_fecha_desde, alergia_fecha_hasta, importancia_alergia);
     }
 
     // Paso 4: Actualizar antecedentes
@@ -117,7 +122,6 @@ exports.actualizarConsulta = async (req, res) => {
     // Paso 6: Actualizar medicamentos
     if (medicamentos_nombre) {
       await pacienteModel.actualizarMedicamentos(
-        connection,
         consultaId,
         medicamentos_nombre,
         medicamentos_dosis,
@@ -125,29 +129,28 @@ exports.actualizarConsulta = async (req, res) => {
       );
     }
 
-    await connection.commit(); // Confirmamos la transacción
-
     // Obtener la consulta actualizada
-    const consultaActualizada = await pacienteModel.getUltimaConsulta(consultaId);
+    const consultas = await pacienteModel.getUltimaConsulta(consultaId);
+    const importancias = await pacienteModel.obtenerImportanciaAlergia();
+    const tiposAlergias = await pacienteModel.obtenerTiposAlergias();
+    const tiposDiagnostico = await pacienteModel.obtenerTiposDiagnostico();
+    console.log('Tipos de diagnóstico obtenidos:', tiposDiagnostico);
 
     // Renderizamos la vista de modificación con un mensaje de éxito
     res.render('modificarConsulta', {
       successMessage: 'La consulta fue actualizada exitosamente.',
-      consulta: consultaActualizada,
-      importancias: await pacienteModel.obtenerImportanciaAlergia(),
-      medicoId,
-      pacienteId,
+      importancias: importancias,
+      tiposAlergias: tiposAlergias,
+      tiposDiagnostico: tiposDiagnostico,
+      consultas: consultas
     });
   } catch (error) {
     console.error('Error al actualizar la consulta:', error);
 
     res.status(500).render('modificarConsulta', {
       errorMessage: 'Hubo un error al intentar actualizar la consulta. Por favor, intente nuevamente.',
-      consulta: null,
+      consulta: {},
       importancias: await pacienteModel.obtenerImportanciaAlergia(),
-      medicoId,
-      pacienteId,
     });
   }
 };
-
