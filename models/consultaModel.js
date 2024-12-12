@@ -108,7 +108,6 @@ module.exports = {
       return result;
   },
 
-
   // Guardar antecedentes
   guardarAntecedentes: async (antecedentes, fecha_desde_antecedentes, fecha_hasta_antecedentes, idConsulta) => {
       const [result] = await db.execute(`
