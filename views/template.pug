@@ -79,13 +79,12 @@ html
 
                     if (respuesta.ok) {
                         alert("Template cargado con éxito.");
-                        window.location.href = `/agenda/${medicoId}`;
+                        window.location.href = respuesta.url;
                     } else {
                         alert("Error al cargar el template.");
                     }
                 } catch (error) {
                     console.error("Error en la solicitud:", error);
-                    alert("Ocurrió un error inesperado.");
                 }
             }
 
