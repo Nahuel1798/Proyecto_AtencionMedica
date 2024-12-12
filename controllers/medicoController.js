@@ -1,7 +1,7 @@
 //controllers/medicoController.js
 const db = require('../models/db');
 const turnosModel = require('../models/turnosModel');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { DateTime } = require('luxon');
 
 exports.loginPage = (req, res) => {
