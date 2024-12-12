@@ -24,6 +24,6 @@ router.post('/nuevo-turno', medicoController.crearTurno);
 
 router.get('/logout', medicoController.logout);
 
-router.post('/cancelar-turno', medicoController.cancelarTurno);
+router.get('/cancelar-turno/:turnoId', medicoController.cancelarTurno);
 
 module.exports = router;

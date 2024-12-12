@@ -1,0 +1,92 @@
+//- doctype html
+//- html
+//-   head
+//-     title= title
+//-     link(rel='stylesheet', href='/stylesheets/style.css')
+//-     link(href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet")
+//-   body
+//-     form.template()
+//-         h1.template Crear un template
+//-         label.template(for="nombre") Nombre:
+//-         input.template(type="text" name="nombre" id="nombre" placeholder="Tu nombre" required)
+
+//-         label.template(for="texto_template") texto template:
+//-         textarea#editor.template(type="texto_template" name="texto_template" placeholder="tu template" required)
+//-         div.button-group
+//-           button.template(type="button",onclick="enviar()") Cargar
+//-         if error
+//-             p.error-message= error
+//-     a.volver(href=`/agenda/${medicoId}`) Volver a la agenda
+//-     script(src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js") 
+//-     script. 
+//-         const quill = new Quill('#editor', {
+//-             theme: 'snow'
+//-         }); 
+    
+//-         function enviar(){
+//-             const contenedor = quill.root.innerHTML
+//-             const nombretemplate = document.getElementById("nombre").value
+//-             fetch('/template',{
+//-                 method:'POST',
+//-                 headers: {'Content-Type': 'application/json'},
+//-                 body : JSON.stringify({contenedor,nombretemplate})
+//-             })}
+
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet")
+  body
+    h1 Agregar Nuevo Template
+    div.templateContenedor
+        form.template(onSubmit="enviar(event)")
+            label.template(for="nombre") Nombre:
+            input.template(type="text" name="nombre" id="nombre" placeholder="Tu nombre" required)
+            
+            label.template(for="texto_template") Texto del template:
+            div#editor.template
+            
+            div.button-group
+            button.template(type="submit") Cargar
+
+            if error
+                p.error-message= error
+
+        a.volver(href=`/agenda/${medicoId}`) Volver a la agenda
+
+        script(src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js") 
+        script.
+            const quill = new Quill('#editor', { theme: 'snow' });
+            
+            async function enviar(event) {
+                event.preventDefault();
+                const nombretemplate = document.getElementById("nombre").value.trim();
+                const contenedor = quill.root.innerHTML.trim();
+
+                if (!nombretemplate || !contenedor) {
+                    alert("Por favor completa todos los campos.");
+                    return;
+                }
+
+                try {
+                    const respuesta = await fetch('/template', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contenedor, nombretemplate })
+                    });
+
+                    if (respuesta.ok) {
+                        alert("Template cargado con éxito.");
+                        window.location.href = `/agenda/${medicoId}`;
+                    } else {
+                        alert("Error al cargar el template.");
+                    }
+                } catch (error) {
+                    console.error("Error en la solicitud:", error);
+                    alert("Ocurrió un error inesperado.");
+                }
+            }
+
+    

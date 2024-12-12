@@ -31,6 +31,8 @@ module.exports = {
       return result;
   },
 
+  
+
   // Función para cancelar la consulta
   cancelarConsulta: async (turnoId) => {
     await db.execute(`
@@ -54,19 +56,19 @@ module.exports = {
   },
 
   // Guardar diagnóstico
-  guardarDiagnostico: async (idConsulta, diagnostico, tiposDiagnostico) => {
+  guardarDiagnostico: async (diagnostico, tiposDiagnostico, idConsulta) => {
     const [result] = await db.execute(`
-        INSERT INTO diagnostico (id_consulta, descripcion, tipo_diagnostico) VALUES (?, ?, ?)
-    `, [idConsulta, diagnostico,tiposDiagnostico]);
+        INSERT INTO diagnostico (descripcion, tipo_diagnostico, id_consulta) VALUES (?, ?, ?)
+    `, [diagnostico, tiposDiagnostico, idConsulta]);
 
     return result;
   },
 
   // Guardar evolución
-  guardarEvolucion: async (idConsulta, evolucion, fecha_evolucion) => {
+  guardarEvolucion: async (fecha_evolucion, evolucion, idConsulta) => {
       const [result] = await db.execute(`
-          INSERT INTO evolucion (id_consulta,fecha_evolucion, resumen_atencion) VALUES (?, ?, ?)
-      `, [idConsulta, evolucion, fecha_evolucion]);
+          INSERT INTO evolucion (fecha_evolucion, resumen_atencion, id_consulta) VALUES (?, ?, ?)
+      `, [fecha_evolucion, evolucion, idConsulta]);
 
       return result;
   },
@@ -98,38 +100,38 @@ module.exports = {
   },
 
   // Guardar alergias
-  guardarAlergias: async (idConsulta, tipos_alergias,alergia_fecha_desde,alergia_fecha_hasta,importanciaAlergia) => {
+  guardarAlergias: async (tipos_alergias, alergia_fecha_desde, alergia_fecha_hasta, idConsulta, importanciaAlergia) => {
       const [result] = await db.execute(`
-          INSERT INTO alergia (id_consulta, tipo_alergia, fecha_desde, fecha_hasta, importancia) VALUES (?, ?, ?, ?, ?)
-      `, [idConsulta, tipos_alergias,alergia_fecha_desde,alergia_fecha_hasta,importanciaAlergia]);
+          INSERT INTO alergia (tipo_alergia, fecha_desde, fecha_hasta, id_consulta, importancia ) VALUES (?, ?, ?, ?, ?)
+      `, [tipos_alergias, alergia_fecha_desde, alergia_fecha_hasta, idConsulta, importanciaAlergia]);
 
       return result;
   },
 
 
   // Guardar antecedentes
-  guardarAntecedentes: async (idConsulta, antecedentes,fecha_desde_antecedentes,fecha_hasta_antecedentes) => {
+  guardarAntecedentes: async (antecedentes, fecha_desde_antecedentes, fecha_hasta_antecedentes, idConsulta) => {
       const [result] = await db.execute(`
-          INSERT INTO antecedentes (id_consulta, descripcion, fecha_desde, fecha_hasta) VALUES (?, ?, ?, ?)
-      `, [idConsulta, antecedentes, fecha_desde_antecedentes,fecha_hasta_antecedentes]);
+          INSERT INTO antecedentes (descripcion, fecha_desde, fecha_hasta, id_consulta) VALUES (?, ?, ?, ?)
+      `, [antecedentes, fecha_desde_antecedentes, fecha_hasta_antecedentes, idConsulta]);
 
       return result;
   },
 
   // Guardar habito
-  guardarHabitos: async (idConsulta, habitos, fecha_desde_habitos, fecha_hasta_habitos) => {
+  guardarHabitos: async (habitos, fecha_desde_habitos, fecha_hasta_habitos, idConsulta) => {
       const [result] = await db.execute(`
-          INSERT INTO habito (id_consulta, descripcion, fecha_desde, fecha_hasta) VALUES (?, ?, ?, ?)
-      `, [idConsulta, habitos, fecha_desde_habitos, fecha_hasta_habitos]);
+          INSERT INTO habito (descripcion, fecha_desde, fecha_hasta, id_consulta) VALUES (?, ?, ?, ?)
+      `, [habitos, fecha_desde_habitos, fecha_hasta_habitos, idConsulta]);
 
       return result;
   },
 
   // Guardar medicamentos
-  guardarMedicamentos: async (idConsulta, medicamentos, medicamentos_dosis, medicamentos_frecuencia) => {
+  guardarMedicamentos: async (medicamentos, medicamentos_dosis, medicamentos_frecuencia, idConsulta) => {
       const [result] = await db.execute(`
-          INSERT INTO medicamentos (id_consulta, nombre, dosis , frecuencia) VALUES (?, ?, ?, ?)
-      `, [idConsulta, medicamentos, medicamentos_dosis, medicamentos_frecuencia]);
+          INSERT INTO medicamentos (nombre, dosis , frecuencia, id_consulta) VALUES (?, ?, ?, ?)
+      `, [medicamentos, medicamentos_dosis, medicamentos_frecuencia, idConsulta]);
 
       return result;
   },

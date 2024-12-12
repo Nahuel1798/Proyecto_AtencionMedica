@@ -5,18 +5,18 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet")
   body
-  div.login
-    form.login(action="/login" method="POST")
-      h1.login Ingrese al sistema
-      label.loginC(for="username") Usuario: 
-      input.loginE(type="email" name="email" placeholder="Email" required)
-      label.loginC(for="contraseña") Contraseña:
-      input.loginE(type="password" name="password" placeholder="Contraseña" required)
-      button.login(type="submit") Ingresar  
-      if message
-        p.error-message= message  
-      div.register-section
-        p.register ¿No tienes cuenta?
-        a.button-register(href="/signup") Registrarse
+    div.login
+      form.login(action="/login" method="POST")
+        h1.login Ingrese al sistema
+        label.loginC(for="username") Usuario: 
+        input.loginE(type="email" name="email" placeholder="Email" required)
+        label.loginC(for="contraseña") Contraseña:
+        input.loginE(type="password" name="password" placeholder="Contraseña" required)
+        button.login(type="submit") Ingresar  
+        if message
+          p.error-message= message  
+        div.register-section
+          p.register ¿No tienes cuenta?
+          a.button-register(href="/signup") Registrarse
 
   

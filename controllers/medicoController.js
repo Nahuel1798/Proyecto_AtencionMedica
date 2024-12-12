@@ -2,6 +2,7 @@
 const db = require('../models/db');
 const turnosModel = require('../models/turnosModel');
 const bcrypt = require('bcrypt');
+const { DateTime } = require('luxon');
 
 exports.loginPage = (req, res) => {
   res.render('login');
@@ -58,6 +59,7 @@ exports.login = async (req, res) => {
 
   // Autenticar al usuario
   req.session.medicoId = medico.id_medico;
+  req.session.medicoNombre = medico.nombre;
   res.redirect(`/agenda/${medico.id_medico}`);
 };
 
@@ -73,11 +75,21 @@ exports.isAuthenticated = (req, res, next) => {
 
 
 exports.cancelarTurnosPasados = async () => {
-  const fechaActual = new Date().toISOString().split('T')[0]; // Fecha de hoy en formato yyyy-MM-dd
-  await db.execute('UPDATE turno SET id_estado = 3 WHERE fecha_turno < ? AND id_estado = 1', [fechaActual]);
+  const fechaActual = new Date();
+  const fechaISO = fechaActual.toISOString().split('T')[0];
+  const horaActual = fechaActual.toTimeString().split(' ')[0]; // Hora actual en formato HH:mm:ss
+
+  await db.execute(
+    `UPDATE turno 
+     SET id_estado = 3 
+     WHERE (fecha_turno < ? OR (fecha_turno = ? AND hora_turno < ?)) 
+     AND id_estado = 1`, 
+    [fechaISO, fechaISO, horaActual]
+  );
 };
 
 exports.agenda = async (req, res) => {
+  const medicoNombre = req.session.medicoNombre;
   const medicoId = req.params.medicoId;
   const fechaSeleccionada = req.query.fecha || new Date().toISOString().split('T')[0]; // Fecha de hoy en formato yyyy-MM-dd
   console.log(`Buscando turnos para el turno con ID: ${medicoId} y fecha: ${fechaSeleccionada}`);
@@ -97,6 +109,7 @@ exports.agenda = async (req, res) => {
   // Obtener los datos de los turnos
   const turnos = await turnosModel.getTurnos(medicoId, fechaSeleccionada);
   console.log('Datos obtenidos:', turnos);
+
 
   // Si no hay turnos, establecer noTurnos en true
   const noTurnos = !turnos || turnos.length === 0;
@@ -118,6 +131,7 @@ exports.agenda = async (req, res) => {
     turnos: turnosFormateados,
     fechaSeleccionada,
     medicoId,
+    medicoNombre,
     noTurnos,
     message: noTurnos ? 'No se encontraron datos de la agenda.' : null
   });
@@ -144,8 +158,9 @@ exports.logout = (req, res) => {
 
 
 exports.cancelarTurno = async (req, res) => {
-  const turnoId = req.body.turnoId; 
+  const turnoId = req.params.turnoId; 
   const medicoId = req.session.medicoId; 
+  console.log(`Cancelando turno con ID: ${turnoId}`);
 
   if (!turnoId) {
     console.error('Error: turnoId no está definido.');
@@ -180,12 +195,35 @@ exports.crearTurno = async (req, res) => {
   const { fecha, hora, motivo, id_paciente, id_estado } = req.body;
   const medicoId = req.session.medicoId;
 
+  // // Obtener fecha y hora actual en Argentina
+  // const ahora = DateTime.now().setZone('America/Argentina/Buenos_Aires');
+
+  // // Validar fecha y hora ingresadas
+  // const fechaHoraIngresada = DateTime.fromFormat(
+  //   `${fecha} ${hora}`, 
+  //   'yyyy-MM-dd HH:mm', 
+  //   { zone: 'America/Argentina/Buenos_Aires' }
+  // );
+
+  // if (fechaHoraIngresada < ahora) {
+  //   return res.status(400).send('La fecha y hora ingresadas son anteriores a la actual.');
+  // }
+
+  // Verificar si el médico tiene una agenda
   const agenda = await turnosModel.obtenerAgendaPorMedico(medicoId);
   if (!agenda) {
     return res.status(400).send('No se encontró una agenda para este médico.');
   }
 
-  const result = await turnosModel.crearTurno(fecha, hora, motivo, agenda.id_agenda, id_paciente, id_estado);
+  // Crear el turno
+  const result = await turnosModel.crearTurno(
+    fecha, 
+    hora, 
+    motivo, 
+    agenda.id_agenda, 
+    id_paciente, 
+    id_estado
+  );
 
   if (result.affectedRows > 0) {
     res.redirect(`/agenda/${medicoId}`);

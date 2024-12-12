@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  h1 Lista de Médicos
+  table.mostrarMedicos
+    thead
+      tr.mostrarMedicos
+        th.mostrarMedicos Nº Médico
+        th.mostrarMedicos Nombre
+        th.mostrarMedicos Especialidad
+        th.mostrarMedicos Acción
+    tbody.mostrarMedicos
+      each medico in medicos
+        tr.mostrarMedicos
+          td.mostrarMedicos= medico.id_medico
+          td.mostrarMedicos= medico.nombre
+          td.mostrarMedicos= medico.especialidad
+          td.mostrarMedicos= medico.email
+    a.mostrarMedicos(href=`/agenda/${medicoId}`) Volver Agenda

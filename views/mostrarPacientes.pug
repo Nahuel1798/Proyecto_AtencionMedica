@@ -1,0 +1,26 @@
+extends layout
+
+block content
+  h1 Lista de Pacientes
+  table.mostrarPaciente
+    thead.mostrarPaciente
+      tr.mostrarPaciente
+        th.mostrarPaciente Nº Paciente
+        th.mostrarPaciente Nombre
+        th.mostrarPaciente Apellido
+        th.mostrarPaciente Fecha de Nacimiento 
+        th.mostrarPaciente Dni 
+        th.mostrarPaciente Direccion 
+        th.mostrarPaciente Telefono 
+    tbody.mostrarPaciente
+      each paciente in pacientes
+        tr.mostrarPaciente
+          td.mostrarPaciente= paciente.id_paciente
+          td.mostrarPaciente= paciente.nombre
+          td.mostrarPaciente= paciente.apellido
+          td.mostrarPaciente= paciente.fecha_nacimiento 
+          td.mostrarPaciente= paciente.Dni 
+          td.mostrarPaciente= paciente.direccion 
+          td.mostrarPaciente= paciente.telefono
+      a.mostrarPaciente(href=`/agenda/${medicoId}`) Volver Agenda
+            

@@ -30,6 +30,8 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet")
+    script(src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js")
+    script(src="/javascripts/historialClinico.js")
   body
     h1 Historial Clínico de #{consulta[0].paciente_nombre || 'Paciente No Encontrado'}
 
@@ -40,10 +42,11 @@ html
     // Última consulta
     if ultimaConsulta
       div.hce
-        h2 Última Consulta - #{ultimaConsulta.fecha_consulta} #{ultimaConsulta.hora}
+        h2 Última Consulta - #{ultimaConsulta.fecha_consulta} 
+        h2 Hora de la consulta - #{ultimaConsulta.hora_consulta}
         p Medico a cargo: #{ultimaConsulta.medico || 'No disponible'}
         p Diagnóstico: #{ultimaConsulta.diagnostico || 'No disponible'}
-        p Evolución: #{ultimaConsulta.evolucion || 'No disponible'}
+        div.evolucion Evolución: !{ultimaConsulta.evolucion || 'No disponible'}
         p Alergias: #{ultimaConsulta.alergias || 'No disponible'}
         p Antecedentes Patológicos: #{ultimaConsulta.antecedentes || 'No disponible'}
         p Hábitos: #{ultimaConsulta.habitos || 'No disponible'}
@@ -51,15 +54,37 @@ html
         a.button(href=`/modificarConsulta/${ultimaConsulta.id_consulta}`) Modificar Consulta
         hr
 
+    // Botones para alternar entre las consultas
+    div.botones
+      button.button(id="btnMedicoActual") Ver Consultas del Médico Actual
+      button.button(id="btnOtrosMedicos") Ver Consultas de Otros Médicos
+
+    // Consultas del médico actual
+    div.hce#consultasMedicoActual(style="display: none;")
+      if medicoConsulta.length > 0
+        each consulta in medicoConsulta
+          div.hce
+            h2 Consultas Del Medico Actual - #{consulta.fecha_consulta}  
+            h2 Hora de la consulta - #{consulta.hora_consulta}
+            p Médico a cargo: #{consulta.medico || 'No disponible'}
+            p Diagnóstico: #{consulta.diagnostico || 'No disponible'}
+            div.evolucion Evolución: !{consulta.evolucion || 'No disponible'}
+            p Alergias: #{consulta.alergias || 'No disponible'}
+            p Antecedentes Patológicos: #{consulta.antecedentes || 'No disponible'}
+            p Hábitos: #{consulta.habitos || 'No disponible'}
+            p Medicamentos en uso: #{consulta.medicamento || 'No disponible'}
+            hr
+
+
     // Consultas atendidas por otros médicos
-    if consultasOtrosMedicos && consultasOtrosMedicos.length > 0
-      h2 Consultas realizadas por otros médicos
-      each consulta in consultasOtrosMedicos
-        div.hce
-          h3 Consulta el #{consulta.fecha_consulta}
-          p Médico: #{consulta.medico}
-          p Diagnóstico: #{consulta.diagnostico || 'No disponible'}
-          hr
-    else
-      p No se encontraron consultas realizadas por otros médicos.
-    
+    div.hce#consultasOtrosMedicos(style="display: none;")
+      if medicoNoConsulta && medicoNoConsulta.length > 0
+        h2 Consultas realizadas por otros médicos
+        each consulta in medicoNoConsulta
+          div.hce
+            h3 Consulta el #{consulta.fecha_consulta}
+            p Médico: #{consulta.medico}
+            p Diagnóstico: #{consulta.diagnostico || 'No disponible'}
+            hr
+      else
+        p No se encontraron consultas realizadas por otros médicos.

@@ -11,6 +11,8 @@ var usersRouter = require('./routes/users');
 var medicoRoutes = require('./routes/medico');
 var pacienteRoutes = require('./routes/paciente');
 var consultaRouter = require('./routes/consulta');
+var navRouter = require('./routes/nav');
+var templateRouter = require('./routes/template');
 
 var app = express();
 
@@ -43,6 +45,8 @@ app.use((req, res, next) => {
 app.use('/', indexRouter);
 app.use('/', medicoRoutes);
 app.use('/', pacienteRoutes);
+app.use('/', navRouter);
+app.use('/', templateRouter);
 app.use('/', consultaRouter);
 app.use('/users', usersRouter);
 

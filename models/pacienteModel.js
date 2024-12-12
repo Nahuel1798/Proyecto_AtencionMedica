@@ -28,8 +28,74 @@ module.exports = {
       LEFT JOIN agenda ag ON t.id_agenda = ag.id_agenda
       LEFT JOIN medico me ON ag.id_medico = me.id_medico
       WHERE p.id_paciente = ?
-      ORDER BY c.fecha_consulta DESC
+      ORDER BY c.fecha_consulta , c.hora_consulta DESC
     `, [pacienteId]);
+
+    return consulta;
+  },
+
+  //obtener historial clinico de un paciente del medico
+  getPacienteHistorialDelMedico: async (pacienteId,medicoId) => {
+    const [consulta] = await db.execute(`
+      SELECT 
+        c.fecha_consulta,
+        c.hora_consulta, 
+        d.descripcion AS diagnostico, 
+        e.resumen_atencion AS evolucion, 
+        a.tipo_alergia AS alergias, 
+        an.descripcion AS antecedentes, 
+        h.descripcion AS habitos, 
+        m.nombre AS medicamento,
+        p.nombre AS paciente_nombre,
+        me.nombre AS medico,
+        c.id_consulta
+      FROM consulta c
+      LEFT JOIN diagnostico d ON c.id_consulta = d.id_consulta
+      LEFT JOIN evolucion e ON c.id_consulta = e.id_consulta
+      LEFT JOIN alergia a ON c.id_consulta = a.id_consulta
+      LEFT JOIN antecedentes an ON c.id_consulta = an.id_consulta
+      LEFT JOIN habito h ON c.id_consulta = h.id_consulta
+      LEFT JOIN medicamentos m ON c.id_consulta = m.id_consulta
+      LEFT JOIN paciente p ON c.id_paciente = p.id_paciente
+      LEFT JOIN turno t ON c.id_turno = t.id_turno
+      LEFT JOIN agenda ag ON t.id_agenda = ag.id_agenda
+      LEFT JOIN medico me ON ag.id_medico = me.id_medico
+      WHERE p.id_paciente = ? and ag.id_medico = ?
+      ORDER BY c.fecha_consulta , c.hora_consulta DESC
+    `, [pacienteId,medicoId]);
+
+    return consulta;
+  },
+
+  //obtener historial clinico de un paciente que no sea del medico
+  getPacienteHistorialNoDelMedico: async (pacienteId,medicoId) => {
+    const [consulta] = await db.execute(`
+      SELECT 
+        c.fecha_consulta,
+        c.hora_consulta, 
+        d.descripcion AS diagnostico, 
+        e.resumen_atencion AS evolucion, 
+        a.tipo_alergia AS alergias, 
+        an.descripcion AS antecedentes, 
+        h.descripcion AS habitos, 
+        m.nombre AS medicamento,
+        p.nombre AS paciente_nombre,
+        me.nombre AS medico,
+        c.id_consulta
+      FROM consulta c
+      LEFT JOIN diagnostico d ON c.id_consulta = d.id_consulta
+      LEFT JOIN evolucion e ON c.id_consulta = e.id_consulta
+      LEFT JOIN alergia a ON c.id_consulta = a.id_consulta
+      LEFT JOIN antecedentes an ON c.id_consulta = an.id_consulta
+      LEFT JOIN habito h ON c.id_consulta = h.id_consulta
+      LEFT JOIN medicamentos m ON c.id_consulta = m.id_consulta
+      LEFT JOIN paciente p ON c.id_paciente = p.id_paciente
+      LEFT JOIN turno t ON c.id_turno = t.id_turno
+      LEFT JOIN agenda ag ON t.id_agenda = ag.id_agenda
+      LEFT JOIN medico me ON ag.id_medico = me.id_medico
+      WHERE p.id_paciente = ? and ag.id_medico != ?
+      ORDER BY c.fecha_consulta , c.hora_consulta DESC
+    `, [pacienteId,medicoId]);
 
     return consulta;
   },
@@ -47,6 +113,7 @@ module.exports = {
         h.descripcion AS habitos, 
         m.nombre AS medicamento,
         p.nombre AS paciente_nombre,
+        p.apellido AS paciente_apellido,
         me.nombre AS medico
       FROM consulta c
       LEFT JOIN diagnostico d ON c.id_consulta = d.id_consulta
@@ -60,13 +127,11 @@ module.exports = {
       LEFT JOIN agenda ag ON t.id_agenda = ag.id_agenda
       LEFT JOIN medico me ON ag.id_medico = me.id_medico
       WHERE c.id_consulta = ?
+      ORDER BY c.fecha_consulta , c.hora_consulta DESC
     `, [consultaId]);
 
     return consultas;
   },
-
-  // Actualizar Consulta
-  
 
   // Tipo Diagnostico
   obtenerTiposDiagnostico: async () => {
@@ -127,41 +192,89 @@ module.exports = {
 
   // Actualizar Alergias
   actualizarAlergias: async (consultaId, tipo_alergias, fechaDesde, fechaHasta, importancia) => {
-    const [result] = await db.execute(
-      'UPDATE alergia SET tipo_alergia = ?, fecha_desde = ?, fecha_hasta = ?, importancia = ? WHERE id_consulta = ?',
-      [tipo_alergias, fechaDesde, fechaHasta, importancia, consultaId]
+    const [existing] = await db.execute(
+      'SELECT * FROM alergia WHERE id_consulta = ?',
+      [consultaId]
     );
-
+  
+    let result;
+    if (existing.length === 0) {
+      [result] = await db.execute(
+        'INSERT INTO alergia (id_consulta, tipo_alergia, fecha_desde, fecha_hasta, importancia) VALUES (?, ?, ?, ?, ?)',
+        [consultaId, tipo_alergias, fechaDesde, fechaHasta, importancia]
+      );
+    } else {
+      [result] = await db.execute(
+        'UPDATE alergia SET tipo_alergia = ?, fecha_desde = ?, fecha_hasta = ?, importancia = ? WHERE id_consulta = ?',
+        [tipo_alergias, fechaDesde, fechaHasta, importancia, consultaId]
+      );
+    }
     return result;
   },
 
   // Actualizar Antecedentes
   actualizarAntecedentes: async (consultaId, antecedentes, fechaDesde, fechaHasta) => {
-    const [result] = await db.execute(
-      'UPDATE antecedentes SET descripcion = ?, fecha_desde = ?, fecha_hasta = ? WHERE id_consulta = ?',
-      [antecedentes, fechaDesde, fechaHasta, consultaId]
+    const [existing] = await db.execute(
+      'SELECT * FROM antecedentes WHERE id_consulta = ?',
+      [consultaId]
     );
-
+  
+    let result;
+    if (existing.length === 0) {
+      [result] = await db.execute(
+        'INSERT INTO antecedentes (id_consulta, descripcion, fecha_desde, fecha_hasta) VALUES (?, ?, ?, ?)',
+        [consultaId, antecedentes, fechaDesde, fechaHasta]
+      );
+    } else {
+      [result] = await db.execute(
+        'UPDATE antecedentes SET descripcion = ?, fecha_desde = ?, fecha_hasta = ? WHERE id_consulta = ?',
+        [antecedentes, fechaDesde, fechaHasta, consultaId]
+      );
+    }
     return result;
   },
 
   // Actualizar Hábitos
   actualizarHabitos: async (consultaId, habitos, fechaDesde, fechaHasta) => {
-    const [result] = await db.execute(
-      'UPDATE habito SET descripcion = ?, fecha_desde = ?, fecha_hasta = ? WHERE id_consulta = ?',
-      [habitos, fechaDesde, fechaHasta, consultaId]
+    const [existing] = await db.execute(
+      'SELECT * FROM habito WHERE id_consulta = ?',
+      [consultaId]
     );
-
+  
+    let result;
+    if (existing.length === 0) {
+      [result] = await db.execute(
+        'INSERT INTO habito (id_consulta, descripcion, fecha_desde, fecha_hasta) VALUES (?, ?, ?, ?)',
+        [consultaId, habitos, fechaDesde, fechaHasta]
+      );
+    } else {
+      [result] = await db.execute(
+        'UPDATE habito SET descripcion = ?, fecha_desde = ?, fecha_hasta = ? WHERE id_consulta = ?',
+        [habitos, fechaDesde, fechaHasta, consultaId]
+      );
+    }
     return result;
   },
 
   // Actualizar Medicamentos
   actualizarMedicamentos: async (consultaId, medicamentosNombre, medicamentosDosis, medicamentosFrecuencia) => {
     const [existing] = await db.execute(
-      'UPDATE medicamentos SET nombre = ?, dosis = ?, frecuencia = ? WHERE id_consulta = ?',
-        [medicamentosNombre, medicamentosDosis, medicamentosFrecuencia, consultaId]
+      'SELECT * FROM medicamentos WHERE id_consulta = ?',
+      [consultaId]
     );
-
-    return existing;
+  
+    let result;
+    if (existing.length === 0) {
+      [result] = await db.execute(
+        'INSERT INTO medicamentos (id_consulta, nombre, dosis, frecuencia) VALUES (?, ?, ?, ?)',
+        [consultaId, medicamentosNombre, medicamentosDosis, medicamentosFrecuencia]
+      );
+    } else {
+      [result] = await db.execute(
+        'UPDATE medicamentos SET nombre = ?, dosis = ?, frecuencia = ? WHERE id_consulta = ?',
+        [medicamentosNombre, medicamentosDosis, medicamentosFrecuencia, consultaId]
+      );
+    }
+    return result;
   },
 };

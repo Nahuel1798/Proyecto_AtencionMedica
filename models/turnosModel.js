@@ -11,6 +11,7 @@ module.exports = {
           et.descripcion AS estado,
           p.id_paciente,
           p.nombre AS paciente_nombre, 
+          p.apellido AS paciente_apellido,
           m.nombre AS medico_nombre 
         FROM turno t 
         JOIN estado_turno et ON t.id_estado = et.id_estado

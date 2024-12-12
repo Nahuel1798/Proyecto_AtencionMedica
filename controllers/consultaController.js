@@ -1,5 +1,6 @@
 // controllers/consultaController.js
 const consultaModel = require('../models/consultaModel');
+const templateModel = require('../models/templateModel');
 
 exports.formularioConsulta = async (req, res) => {
   const turnoId = req.params.turnoId;
@@ -13,6 +14,8 @@ exports.formularioConsulta = async (req, res) => {
   try {
     // Obtener detalles del turno
     const turno = await consultaModel.obtenerTurno(turnoId, pacienteId);
+    const templates = await templateModel.obtenerTemplatesPorMedico(medicoId);
+    console.log('templates obtenidos:', templates);
 
     if (!turno) {
       return res.status(404).send('Turno no encontrado');
@@ -28,12 +31,13 @@ exports.formularioConsulta = async (req, res) => {
     console.log('Tipos de alergias obtenidos:', tiposAlergias);
     
     // Renderizar la vista del formulario con los detalles del turno
-    res.render('consulta', { turno: turno, importancias: importancias, medicoId: medicoId, tiposDiagnostico: tiposDiagnostico, tiposAlergias: tiposAlergias });
+    res.render('consulta', { turno: turno, importancias: importancias, medicoId: medicoId, tiposDiagnostico: tiposDiagnostico, tiposAlergias: tiposAlergias, templates: templates });
   } catch (error) {
     console.error('Error al cargar el formulario:', error);
     res.status(500).send('Error al cargar el formulario');
   }
 };
+
 
 // Guardar consulta en la base de datos
 exports.guardarConsulta = async (req, res) => {
@@ -52,29 +56,31 @@ exports.guardarConsulta = async (req, res) => {
     const consultaResult = await consultaModel.guardarConsulta(turnoId, pacienteId);
 
     // Paso 2: Guardar dignóstico
-    await consultaModel.guardarDiagnostico(consultaResult.insertId, diagnostico, tipo_diagnostico);
+    await consultaModel.guardarDiagnostico(diagnostico, tipo_diagnostico, consultaResult.insertId);
 
     // Paso 3: Guardar la evolución
-    await consultaModel.guardarEvolucion(consultaResult.insertId, evolucion, fecha_evolucion);
+    if (evolucion && fecha_evolucion) {
+      await consultaModel.guardarEvolucion(fecha_evolucion, evolucion, consultaResult.insertId);
+    }
 
     // Paso 4: Guardar alergias
     if (tipos_alergias) {
-      await consultaModel.guardarAlergias(consultaResult.insertId, tipos_alergias, alergia_fecha_desde, alergia_fecha_hasta, importancia_alergia);
+      await consultaModel.guardarAlergias(tipos_alergias, alergia_fecha_desde, alergia_fecha_hasta, consultaResult.insertId, importancia_alergia);
     }
 
     // Paso 5: Guardar antecedentes
     if (antecedentes) {
-      await consultaModel.guardarAntecedentes(consultaResult.insertId, antecedentes, fecha_desde_antecedentes, fecha_hasta_antecedentes);
+      await consultaModel.guardarAntecedentes(antecedentes, fecha_desde_antecedentes, fecha_hasta_antecedentes, consultaResult.insertId);
     }
 
     // Paso 6: Guardar habito
     if (habitos) {
-      await consultaModel.guardarHabitos(consultaResult.insertId, habitos, fecha_desde_habitos, fecha_hasta_habitos);
+      await consultaModel.guardarHabitos(habitos, fecha_desde_habitos, fecha_hasta_habitos, consultaResult.insertId);
     }
 
     // Paso 7: Guardar medicamentos
     if (medicamentos_nombre) {
-      await consultaModel.guardarMedicamentos(consultaResult.insertId, medicamentos_nombre, medicamentos_dosis, medicamentos_frecuencia);
+      await consultaModel.guardarMedicamentos(medicamentos_nombre, medicamentos_dosis, medicamentos_frecuencia, consultaResult.insertId);
     }
 
     // Paso final: Marcar el turno como atendido
@@ -85,6 +91,8 @@ exports.guardarConsulta = async (req, res) => {
     const importancias = await consultaModel.obtenerImportanciaAlergia();
     const tiposAlergias = await consultaModel.obtenerTiposAlergias();
     const tiposDiagnostico = await consultaModel.obtenerTiposDiagnostico();
+    const templates = await templateModel.obtenerTemplatesPorMedico(medicoId);
+    console.log('Consulta obtenida:', consultaResult);
 
     // Renderizar la vista con el mensaje de éxito y los datos necesarios
     res.render('consulta', {
@@ -93,7 +101,9 @@ exports.guardarConsulta = async (req, res) => {
       importancias: importancias,
       medicoId: medicoId,
       tiposAlergias: tiposAlergias,
-      tiposDiagnostico: tiposDiagnostico
+      tiposDiagnostico: tiposDiagnostico,
+      consultaResult : consultaResult,
+      templates: templates
     });
     
   } catch (error) {

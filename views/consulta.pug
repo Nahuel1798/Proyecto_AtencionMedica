@@ -6,115 +6,134 @@ html
     link(href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet")
   body
     h1.consulta Formulario de Consulta Médica Completa
+    div.consultaContenedor
+      form.consulta(action=`/consulta/${turno.id_turno}/${turno.id_paciente}`, method="POST")
+        // Datos de la Consulta
+        fieldset
+          legend Datos de la Consulta
 
-    form.consulta(action=`/consulta/${turno.id_turno}/${turno.id_paciente}`, method="POST")
-      // Datos de la Consulta
-      fieldset
-        legend Datos de la Consulta
+          //- Diagnóstico
+          div.consulta
+            label(for='diagnostico') Diagnóstico:
+            textarea(name='diagnostico' id='diagnostico' rows="4" cols="50" required)
 
-        //- Diagnóstico
-        div.consulta
-          label(for='diagnostico') Diagnóstico:
-          textarea(name='diagnostico' id='diagnostico' rows="4" cols="50" required)
+          div.consulta
+            label(for='tipo_diagnostico') Tipo de Diagnóstico:
+            select(name='tipo_diagnostico' id='tipo_diagnostico' required)
+              if tiposDiagnostico.length > 0
+                each tipo in tiposDiagnostico
+                  option.consulta(value=tipo.id_tipo_diagnostico) #{tipo.descripcion}
+              else 
+                option(value="") no hay tipos disponible
 
-        div.consulta
-          label(for='tipo_diagnostico') Tipo de Diagnóstico:
-          select(name='tipo_diagnostico' id='tipo_diagnostico' required)
-            if tiposDiagnostico.length > 0
-              each tipo in tiposDiagnostico
-                option.consulta(value=tipo.id_tipo_diagnostico) #{tipo.descripcion}
-            else 
-              option(value="") no hay tipos disponible
+          //- Evolución
+          div.consulta
+            each template in templates 
+              div.template
+                input(type='hidden', value=template.texto_templete)
+                button.template(type='button', onclick='cargartemplate(this.parentElement)')=template.nombre
+            label(for="evolucion") Evolución:
+            div#editor(name='evolucion' rows="4" cols="50" required)
+            input#evolucion(type="hidden" name="evolucion")
 
-        //- Evolución
-        div.consulta
-          label(for="evolucion") Evolución:
-          textarea#editor(name='evolucion' rows="4" cols="50" required)
-          script(src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js")
-          script.
-            document.addEventListener("DOMContentLoaded", function() {
-              const quill = new Quill('#editor', {
-                theme: 'snow'
+            script(src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js")
+            script.
+              let quill 
+              document.addEventListener("DOMContentLoaded", function() {
+                quill = new Quill('#editor', {
+                  theme: 'snow'
+                });
+                quill.on('text-change',function(){
+                  document.getElementById('evolucion').value=quill.root.innerHTML
+                })
               });
-            });
-        div.consulta
-          label(for="fecha_evolucion") Fecha de Evolución: 
-          input(type='date' name='fecha_evolucion' id='fecha_evolucion' required)
+              function cargartemplate(divpadre){ 
+                const contenedor = quill.root.innerHTML
+                const template = divpadre.querySelector('input').value
+                quill.root.innerHTML = template 
+                console.log('mostrar template:',template,quill)
+              }
 
-      // Alergias (opcional)
-      fieldset
-        legend Alergias
-        div.consulta
-          label(for='tipos_alergias') Alergias:
-          select(name='tipos_alergias' id='tipos_alergias')
-            if tiposAlergias.length > 0
-              each alergias in tiposAlergias
-                option(value=alergias.id_tipo_alergia) #{alergias.descripcion}
-            else 
-              option(value="") No hay alergias disponibles
-        div.consulta
-          label(for='alergia_fecha_desde') Fecha Desde:
-          input(type='date' name='alergia_fecha_desde' id='alergia_fecha_desde')
-        div.consulta
-          label(for='alergia_fecha_hasta') Fecha Hasta:
-          input(type='date' name='alergia_fecha_hasta' id='alergia_fecha_hasta')
-        //- Importancia de la alergia
-        div.consulta 
-           label(for='importancia_alergia') Importancia de la Alergia:
-           select(name="importancia_alergia" id="importancia_alergia")
-            if importancias.length > 0
-              each importancia in importancias
-                option.consulta(value=importancia.id_importancia) #{importancia.nomenclatura}
-            else
-              option(value='') No hay importancias disponibles
-      // Antecedentes (opcional)
-      fieldset
-        legend Antecedentes
-        div.consulta
-          label(for='antecedentes') Descripción de Antecedentes:
-          textarea(name='antecedentes' id='antecedentes' rows="4" cols="50")
-        div.consulta
-          label(for='fecha_desde_antecedentes') Fecha Desde:
-          input(type='date' name='fecha_desde_antecedentes' id='fecha_desde_antecedentes')
-        div.consulta
-          label(for='fecha_hasta_antecedentes') Fecha Hasta:
-          input(type='date' name='fecha_hasta_antecedentes' id='fecha_hasta_antecedentes')
+          div.consulta
+            label(for="fecha_evolucion") Fecha de Evolución: 
+            input(type='date' name='fecha_evolucion' id='fecha_evolucion' required)
 
-      // Hábitos (opcional)
-      fieldset
-        legend Hábitos
-        div.consulta
-          label(for='habitos') Descripción de Hábitos:
-          textarea(name='habitos' id='habitos' rows="4" cols="50")
-        div.consulta
-          label(for='fecha_desde_habitos') Fecha Desde:
-          input(type='date' name='fecha_desde_habitos' id='fecha_desde_habitos')
-        div.consulta
-          label(for='fecha_hasta_habitos') Fecha Hasta:
-          input(type='date' name='fecha_hasta_habitos' id='fecha_hasta_habitos')
+        // Alergias (opcional)
+        fieldset
+          legend Alergias
+          div.consulta
+            label(for='tipos_alergias') Alergias:
+            select(name='tipos_alergias' id='tipos_alergias')
+              if tiposAlergias.length > 0
+                each alergias in tiposAlergias
+                  option(value=alergias.id_tipo_alergia) #{alergias.descripcion}
+              else 
+                option(value="") No hay alergias disponibles
+          div.consulta
+            label(for='alergia_fecha_desde') Fecha Desde:
+            input(type='date' name='alergia_fecha_desde' id='alergia_fecha_desde')
+          div.consulta
+            label(for='alergia_fecha_hasta') Fecha Hasta:
+            input(type='date' name='alergia_fecha_hasta' id='alergia_fecha_hasta')
+          //- Importancia de la alergia
+          div.consulta 
+            label(for='importancia_alergia') Importancia de la Alergia:
+            select(name="importancia_alergia" id="importancia_alergia")
+              if importancias.length > 0
+                each importancia in importancias
+                  option.consulta(value=importancia.id_importancia) #{importancia.nomenclatura}
+              else
+                option(value='') No hay importancias disponibles
+        // Antecedentes (opcional)
+        fieldset
+          legend Antecedentes
+          div.consulta
+            label(for='antecedentes') Descripción de Antecedentes:
+            textarea(name='antecedentes' id='antecedentes' rows="4" cols="50")
+          div.consulta
+            label(for='fecha_desde_antecedentes') Fecha Desde:
+            input(type='date' name='fecha_desde_antecedentes' id='fecha_desde_antecedentes')
+          div.consulta
+            label(for='fecha_hasta_antecedentes') Fecha Hasta:
+            input(type='date' name='fecha_hasta_antecedentes' id='fecha_hasta_antecedentes')
 
-      // Medicamentos (opcional)
-      fieldset
-        legend Medicamentos
-        div.consulta
-          label(for='medicamentos_nombre') Nombre del Medicamento:
-          input(type='text' name='medicamentos_nombre' id='medicamentos_nombre')
-        div.consulta
-          label(for='medicamentos_dosis') Dosis:
-          input(type='text' name='medicamentos_dosis' id='medicamentos_dosis')
-        div.consulta
-          label(for='medicamentos_frecuencia') Frecuencia:
-          input(type='text' name='medicamentos_frecuencia' id='medicamentos_frecuencia')
+        // Hábitos (opcional)
+        fieldset
+          legend Hábitos
+          div.consulta
+            label(for='habitos') Descripción de Hábitos:
+            textarea(name='habitos' id='habitos' rows="4" cols="50")
+          div.consulta
+            label(for='fecha_desde_habitos') Fecha Desde:
+            input(type='date' name='fecha_desde_habitos' id='fecha_desde_habitos')
+          div.consulta
+            label(for='fecha_hasta_habitos') Fecha Hasta:
+            input(type='date' name='fecha_hasta_habitos' id='fecha_hasta_habitos')
 
-      // Botón para enviar el formulario
+        // Medicamentos (opcional)
+        fieldset
+          legend Medicamentos
+          div.consulta
+            label(for='medicamentos_nombre') Nombre del Medicamento:
+            input(type='text' name='medicamentos_nombre' id='medicamentos_nombre')
+          div.consulta
+            label(for='medicamentos_dosis') Dosis:
+            input(type='text' name='medicamentos_dosis' id='medicamentos_dosis')
+          div.consulta
+            label(for='medicamentos_frecuencia') Frecuencia:
+            input(type='text' name='medicamentos_frecuencia' id='medicamentos_frecuencia')
+
+        // Botón para enviar el formulario
+        div.consulta
+          button(type='submit') Guardar Consulta
+
+      // Mensaje de éxito si existe
+      if successMessage
+        div.success
+          p= successMessage
+
+      // Enlace para volver a la agenda
       div.consulta
-        button(type='submit') Guardar Consulta
+        a.consulta(href=`/agenda/${medicoId}`) Volver a la agenda
 
-    // Mensaje de éxito si existe
-    if successMessage
-      div.success
-        p= successMessage
 
-    // Enlace para volver a la agenda
-    div.consulta
-      a.consulta(href=`/agenda/${medicoId}`) Volver a la agenda

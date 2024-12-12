@@ -6,28 +6,30 @@ html
     link(href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet")  
   body
     //barra de navegacion
-    nav.navbar
-      div.navbar-conteiner
+    div.navbar-conteiner
+      nav.navbar
+        img(src="../images/logo_medico.png", class="logo")
         ul.navbar-list 
           li
-            a(href="/nuevo-turno") Agregar Turno
-          //- li
-          //-   span.usuario-activo Usuario: #{turno.medico_nombre}
+            a(href="/nuevo-turno") Agregar Turno         
           li 
-            a(href="/agregar-alergia") Agregar Alergia
+            a(href="/mostrarPacientes") Mostrar Pacientes
           li 
-            a(href="/mostrar-consulta") Mostrar consulta 
+            a(href="/mostrarMedicos") Mostrar Medicos
           li 
-            a(href="/mostrar-medico") Mostrar Medico
+            a(href="/template") Agregar Template
           li
             a(href="/logout", class="salir") Salir
+          li
+            a= medicoNombre
+        img(src="../images/usuario.png", class="user-pic")
     //Parte principal
     div.agenda
       if success
         p.success= success
       if error
         p.error= error
-      h1 Agenda del Médico
+      h1.agenda Agenda del Médico
 
       // Campo de selección de fecha y botón de búsqueda
       form.agenda(method="GET", action=`/agenda/${medicoId}`)
@@ -35,6 +37,14 @@ html
           label.agenda(for="fecha") Seleccione una fecha:
           input.agenda(type="date", id="fecha", name="fecha" value=fechaSeleccionada)
           button(type="submit") Buscar
+
+        //- script.
+        //-   const campoFecha = document.getElementById('fecha');
+        //-   const ahora = new Date().toLocaleString("es-AR", {
+        //-     timeZone: "America/Argentina/Buenos_Aires"
+        //-   });
+        //-   const fechaArgentina = new Date(ahora).toISOString().slice(0, 10);
+        //-   campoFecha.value = fechaArgentina;
 
       // Mostrar mensaje si no hay turnos
       if message
@@ -46,8 +56,8 @@ html
               th Nº Turno
               th Fecha
               th Hora
-              th Nro paciente
-              th Paciente
+              th Nombre Paciente
+              th Apellido Paciente
               th Médico
               th Condicion
               th Historial 
@@ -59,8 +69,8 @@ html
                 td= turno.id_turno
                 td= turno.fecha_turno
                 td= turno.hora_turno
-                td= turno.id_paciente
                 td= turno.paciente_nombre
+                td= turno.paciente_apellido
                 td= turno.medico_nombre
                 td(class= 
                   turno.estado === 'Pendiente' ? 'estado-pendiente' :
@@ -70,16 +80,14 @@ html
                 )= turno.estado
                 //td= turno.estado
                 td
-                  a(href=`/historial/${turno.id_paciente}`) Ver Historial
+                  a.agenda(href=`/historial/${turno.id_paciente}`) Ver Historial
                 td 
                   if turno.estado === 'Pendiente'
-                    a(href=`/consulta/${turno.id_turno}/${turno.id_paciente}`) Realizar Consulta
+                    a.agenda(href=`/consulta/${turno.id_turno}/${turno.id_paciente}`) Realizar Consulta
                     br
                   if turno.estado === 'Atendido'
                     a.button(href=`/historial/${turno.id_turno}`) Ver Historial
                 td
                   if turno.estado === 'Pendiente'
-                    form(method="POST", action="/cancelar-turno")
-                      input(type="hidden", name="turnoId", value=turno.id_turno)
-                      button(type="submit", class="btn-cancelar") Cancelar
-
+                    a.buttonCancelar(href=`/cancelar-turno/${turno.id_turno}`) cancelar
+                    

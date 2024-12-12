@@ -1,21 +1,19 @@
 // controllers/pacienteController.js
 const pacienteModel = require('../models/pacienteModel');
+const templateModel = require('../models/templateModel');
 
 exports.historialClinico = async (req, res) => {
   const pacienteId = req.params.pacienteId;
+  const medicoId = req.session.medicoId;
+  console.log(`Buscando historial clínico para el medico con ID: ${medicoId}`);
   console.log(`Buscando historial clínico para el paciente con ID: ${pacienteId}`);
 
   // Obtener los datos del historial clínico
   const consultas = await pacienteModel.getPacienteHistorial(pacienteId);
-  console.log('Datos obtenidos:', consultas);
+  const consultasDelMedico = await pacienteModel.getPacienteHistorialDelMedico(pacienteId, medicoId);
+  const consultasNoDelMedico = await pacienteModel.getPacienteHistorialNoDelMedico(pacienteId, medicoId);
+  console.log('Datos obtenidos:', consultasDelMedico);
 
-  if (!consultas || consultas.length === 0) {
-    return res.render('historialClinico', { 
-      consulta: [], 
-      ultimaConsulta: null, 
-      consultasOtrosMedicos: [] 
-    });
-  }
 
   // Formatear la fecha de cada consulta
   const consultaFormateada = consultas.map(item => {
@@ -29,29 +27,56 @@ exports.historialClinico = async (req, res) => {
     return { ...item, fecha_consulta: fechaFormateada };
   });
 
+  const formconsultasDelMedico = consultasDelMedico.map(item => {
+    const fechaConsulta = new Date(item.fecha_consulta);  // Cambiar "fecha_consulta" según el nombre del campo en tu base de datos
+    const dia = String(fechaConsulta.getDate()).padStart(2, '0');
+    const mes = String(fechaConsulta.getMonth() + 1).padStart(2, '0');
+    const anio = fechaConsulta.getFullYear();
+    const fechaFormateada = `${dia}/${mes}/${anio}`;
+
+    // Retornar el objeto original con la fecha formateada
+    return { ...item, fecha_consulta: fechaFormateada };
+  });
+
+  const formconsultasNoDelMedico = consultasNoDelMedico.map(item => {
+    const fechaConsulta = new Date(item.fecha_consulta);  // Cambiar "fecha_consulta" según el nombre del campo en tu base de datos
+    const dia = String(fechaConsulta.getDate()).padStart(2, '0');
+    const mes = String(fechaConsulta.getMonth() + 1).padStart(2, '0');
+    const anio = fechaConsulta.getFullYear();
+    const fechaFormateada = `${dia}/${mes}/${anio}`;
+
+    // Retornar el objeto original con la fecha formateada
+    return { ...item, fecha_consulta: fechaFormateada };
+  });
+
   // Obtener la última consulta
   const ultimaConsulta = consultaFormateada[0]; // Suponiendo que las consultas están ordenadas por fecha DESC
+  const medicoConsulta = formconsultasDelMedico;
+  const medicoNoConsulta = formconsultasNoDelMedico;
 
   // Filtrar consultas atendidas por otros médicos
-  const consultasOtrosMedicos = consultaFormateada.filter(item => item.medico !== ultimaConsulta.medico);
+  
 
   res.render('historialClinico', {
     consulta: consultaFormateada,
+    consultasDelMedico,
+    consultasNoDelMedico,
+    medicoConsulta,
+    medicoNoConsulta,
     ultimaConsulta,
-    consultasOtrosMedicos,
-    pacienteId
+    pacienteId,
   });
 };
 
 // Función para renderizar el formulario de modificación de la última consulta
 exports.modificarConsulta = async (req, res) => {
   const consultaId = req.params.consultaId; // ID de la consulta a modificar
-  const pacienteId = req.params.pacienteId;
   console.log(`mostrar consultaId: ${consultaId}`);
-  console.log(`mostrar pacienteId: ${pacienteId}`);
+
 
   try {
     const consultas = await pacienteModel.getUltimaConsulta(consultaId); // Obtener los datos de la consulta
+    const templates = await templateModel.obtenerTemplatesPorMedico(req.session.medicoId);
     console.log('Consulta obtenida:', consultas);
 
     const importancias = await pacienteModel.obtenerImportanciaAlergia();
@@ -70,7 +95,7 @@ exports.modificarConsulta = async (req, res) => {
       });
     }
     
-    res.render('modificarConsulta',{consultas: consultas, importancias: importancias, tiposAlergias: tiposAlergias, tiposDiagnostico: tiposDiagnostico, consultaId: consultaId, pacienteId: pacienteId}); 
+    res.render('modificarConsulta',{consultas: consultas[0], importancias: importancias, tiposAlergias: tiposAlergias, tiposDiagnostico: tiposDiagnostico, consultaId: consultaId, templates: templates}); 
   } catch (error) {
     console.error('Error al cargar el formulario:', error);
     res.status(500).send('Error al cargar el formulario');
@@ -80,9 +105,8 @@ exports.modificarConsulta = async (req, res) => {
 // Función para manejar la actualización de la consulta
 exports.actualizarConsulta = async (req, res) => {
   const consultaId = req.params.consultaId; // ID de la consulta a modificar
-  const pacienteId = req.params.pacienteId;
   console.log(`ID de la consulta: ${consultaId}`);
-  console.log(`ID del paciente: ${pacienteId}`);
+
 
   // Desestructuramos los datos enviados desde el formulario
   const {
@@ -131,6 +155,7 @@ exports.actualizarConsulta = async (req, res) => {
 
     // Obtener la consulta actualizada
     const consultas = await pacienteModel.getUltimaConsulta(consultaId);
+    console.log('Consulta obtenida:', consultas);
     const importancias = await pacienteModel.obtenerImportanciaAlergia();
     const tiposAlergias = await pacienteModel.obtenerTiposAlergias();
     const tiposDiagnostico = await pacienteModel.obtenerTiposDiagnostico();
@@ -142,7 +167,7 @@ exports.actualizarConsulta = async (req, res) => {
       importancias: importancias,
       tiposAlergias: tiposAlergias,
       tiposDiagnostico: tiposDiagnostico,
-      consultas: consultas
+      consultas: consultas[0]
     });
   } catch (error) {
     console.error('Error al actualizar la consulta:', error);

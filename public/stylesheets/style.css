@@ -1,17 +1,5 @@
 /* General */
-head {
-  display: block;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #3498db;
-  color: #fff;
-  padding: 20px;
-  text-align: center;
-}
-
 body {
-  display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
@@ -46,15 +34,23 @@ legend {
   color: #333;
   font-weight: bold;
 }
+/*/////////////////////////////////////////////////////////////////////////////////////////*/
 
 /*index*/
 div.index {
-  background-color: #ffffff;
-  padding: 2rem;
+  min-width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   border-radius: 8px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 1200px;
+}
+
+div.mejora{
+  background-color: #fff;
 }
 
 h1.index {
@@ -69,29 +65,36 @@ p.index {
   margin-bottom: 10px;
 }
 
-a.button {
-  display: inline-block;
+a.buttonindex {
   padding: 15px 30px;
-  background-color: #3498db;  
+  background-color: #103d5b;  
   color: white;
-  text-align: center;
-  text-decoration: none;
+  justify-content: center;
+  align-items: center;
   border-radius: 5px;
   font-size: 18px;
   transition: background-color 0.3s;
 }
 
 a.button:hover {
-  background-color: #0d5b8f;  
+  background-color: #0d456a;  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 a.button:active {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
+/*/////////////////////////////////////////////////////////////////////////////////////////*/
+
 /* Login del Medico */
 
 div.login {
+  min-width: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -99,7 +102,6 @@ div.login {
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 50%;
 }
 
 form.login {
@@ -143,7 +145,7 @@ textarea {
 input.loginE[type="email"]:focus,
 input.loginE[type="password"]:focus,
 textarea:focus {
-  border-color: #3498db;
+  border-color: #123d5a;
   outline: none;
 }
 
@@ -153,7 +155,7 @@ button.login{
   width: 100%;
   height: 50px;
   border: 1px solid;
-  background-color: #3498db;
+  background-color: #174767;
   border-radius: 25px;
   font-size: 18px;
   color: white;
@@ -186,39 +188,6 @@ p.register {
   border: 1px solid #f5c6cb;
   border-radius: 4px;
   text-align: center;
-}
-
-/*barra de navegacion*/
-/* navbar */
-.navbar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background-color: #007BFF; /* Color de fondo */
-  color: white;
-  z-index: 1000; /* Asegura que esté por encima del resto del contenido */
-}
-.navbar-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-}
-.navbar-list {
-  list-style: none;
-  display: flex;
-  gap: 1rem;
-}
-.navbar-list a {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-}
-.navbar-list .usuario-activo {
-  font-style: italic;
-}
-.navbar-list .salir {
-  color: #f00;
 }
 
 /*Registro del medico */
@@ -262,7 +231,7 @@ input.signupE {
 }
 
 input.signupE:focus {
-  border-color: #007BFF;
+  border-color: #153e6b;
   outline: none;
 }
 
@@ -279,7 +248,7 @@ div.button-group {
 button.signup {
   margin-bottom: 5px;
   width: 100%;
-  background-color: #007BFF;
+  background-color: #144172;
   color: #ffffff;
   border: none;
   border-radius: 4px;
@@ -289,7 +258,7 @@ button.signup {
 }
 
 button.signup:hover {
-  background-color: #0056b3;
+  background-color: #103358;
 }
 
 a.button-login {
@@ -317,7 +286,334 @@ p.error-message {
   margin-top: 10px;
 }
 
-/* Formulario de Consulta Médica */
+/*/////////////////////////////////////////////////////////////////////////////////////////*/
+
+/*barra de navegacion*/
+/* navbar */
+div.navbar-conteiner {
+  width: 100%;
+  background: rgb(55, 72, 98);
+}
+.navbar {
+  position: fixed;
+  background: rgb(55, 72, 98);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  width: 100px;
+}
+
+.user-pic {
+  width: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-right: 20px;
+}
+
+ul.navbar-list {
+  width: 100%;
+  text-align: right;
+}
+
+ul.navbar-list li {
+  display: inline-block;
+  list-style: none;
+  margin: 10px 20px;
+}
+
+ul.navbar-list li a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 14px;
+}
+
+/*item de barra de navegacion*/
+/* Tabla - Pacientes */
+table.mostrarPaciente {
+  width: 80%;
+  max-width: 1200px;
+  background: rgba(255, 255, 255, 0.95);
+  border-collapse: collapse;
+  margin: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Encabezado de la tabla */
+thead.mostrarPaciente tr {
+  background: rgb(55, 72, 98);
+  color: white;
+  text-align: left;
+}
+
+th.mostrarPaciente, td.mostrarPaciente {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+tr.mostrarPaciente:nth-child(even) {
+  background: #f9f9f9;
+}
+
+tr.mostrarPaciente:hover {
+  background: #e6f7ff;
+}
+
+/* Enlace de volver */
+a.mostrarPaciente {
+  display: block;
+  margin-top: 1.5rem;
+  text-align: center;
+  color: #143b61;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+a.mostrarPaciente:hover {
+  text-decoration: underline;
+}
+
+/* Contenedor de la tabla */
+table.mostrarMedicos {
+  width: 80%;
+  max-width: 1200px;
+  background: rgba(255, 255, 255, 0.95);
+  border-collapse: collapse;
+  margin: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Encabezado de la tabla */
+thead tr.mostrarMedicos {
+  background: #0d345b;
+  color: white;
+  text-align: left;
+}
+
+th.mostrarMedicos, td.mostrarMedicos {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+tr.mostrarMedicos:nth-child(even) {
+  background: #f9f9f9;
+}
+
+tr.mostrarMedicos:hover {
+  background: #e6f7ff;
+}
+
+/* Enlace de volver */
+a.mostrarMedicos {
+  display: block;
+  margin-top: 1.5rem;
+  text-align: center;
+  color: #143a60;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+a.mostrarMedicos:hover {
+  text-decoration: underline;
+}
+
+
+/* Ajuste responsivo */
+@media (max-width: 768px) {
+  .mostrarPaciente, .mostrarMedicos {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .mostrarPaciente th, .mostrarPaciente td,
+  .mostrarMedicos th, .mostrarMedicos td {
+    padding: 8px;
+  }
+}
+
+/* Agregar Turno*/
+/*estilo nuevo-turno*/
+
+div.turnoContenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+form.nuevo {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 400px;
+  max-width: 90%;
+}
+
+h1 {
+  text-align: center;
+  color: #16416c;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+label {
+  font-size: 1rem;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+input, select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.botones {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+button {
+  padding: 0.75rem 1.5rem;
+  background: #103963;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: #004a99;
+}
+
+a.consulta {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  color: #19426b;
+  text-decoration: none;
+  font-weight: bold;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+a.consulta:hover {
+  color: #11345b;
+  text-decoration: underline;
+}
+
+/* Estilo para template*/
+
+div.templateContenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+form.template {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 400px;
+  max-width: 90%;
+}
+
+h1.template {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #113558;
+}
+
+label.template {
+  font-size: 1rem;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+input.template, #editor {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+#editor {
+  min-height: 150px;
+  background: #fff;
+  padding: 1rem;
+}
+
+button.template {
+  width: 100%;
+  padding: 0.75rem;
+  background: #0a3055;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button.template:hover {
+  background: #004a99;
+}
+
+p.error-message {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+a.volver {
+  display: block;
+  margin-top: 1.5rem;
+  text-align: center;
+  color: #0066cc;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+a.volver:hover {
+  text-decoration: underline;
+}
+
+/*/////////////////////////////////////////////////////////////////////////////////////////*/
+
+/* Formulario de Consulta*/
+
+div.consultaContenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 form.consulta {
   background-color: white;
   padding: 2rem;
@@ -329,7 +625,7 @@ form.consulta {
 }
 
 fieldset {
-  border: 2px solid #3498db;
+  border: 2px solid #0e3c5a;
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
@@ -337,9 +633,16 @@ fieldset {
 
 legend {
   font-size: 24px;
-  color: #007bff;
+  color: #12355c;
   margin-bottom: 1rem;
   font-weight: bold;
+}
+
+div.template {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
 input[type="text"],
@@ -369,14 +672,14 @@ textarea {
 input:focus,
 textarea:focus,
 select:focus {
-  border-color: #007bff;
+  border-color: #0e3155;
   outline: none;
 }
 
 /* Botones */
 button[type="submit"] {
   padding: 0.75rem;
-  background-color: #007bff;
+  background-color: #10355d;
   color: #ffffff;
   border: none;
   border-radius: 4px;
@@ -388,12 +691,12 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-  background-color: #0056b3;
+  background-color: #143a63;
 }
 
 button.consulta {
   padding: 0.75rem;
-  background-color: #007bff;
+  background-color: #0e325a;
   color: #ffffff;
   border: none;
   border-radius: 4px;
@@ -406,7 +709,7 @@ button.consulta {
 }
 
 button.consulta:hover {
-  background-color: #0056b3;
+  background-color: #113154;
 }
 
 /* Mensajes de éxito */
@@ -424,7 +727,7 @@ a {
   display: inline-block;
   margin-top: 1rem;
   font-size: 16px;
-  color: #007bff;
+  color: #0d2c4d;
   text-decoration: none;
   padding: 0.5rem;
   border-radius: 4px;
@@ -481,23 +784,39 @@ div.error p {
   margin: 0;
 }
 
+/*/////////////////////////////////////////////////////////////////////////////////////////*/
+
 /* Vista de Agenda */
+div.agenda{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
 .agenda{  
-  max-width: 1125px;
+  max-width: 1500px;
   width: 100%;
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
 }
 
-.agenda form {
-  max-width: 1125px;
+h1.agenda{
+  margin-top: 100px;
+}
+
+form.agenda {
   width: 100%;
+  max-width: 1000px;
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 20px;
-  background-color: #3498db;
+  background-color: #0d344e;
 }
 
 div.fecha {
@@ -510,6 +829,13 @@ div.fecha {
   margin-bottom: 5px;
 }
 
+input.agenda {
+  padding: 8px 12px;
+  font-size: 1em;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
 .agenda h1{
   text-align: center;
   color: #333;
@@ -519,6 +845,17 @@ div.fecha {
   font-weight: bold;
   color: #333;
   margin-right: 10px;
+}
+
+a.agenda {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 16px;
+  color: #103257;
+  text-decoration: none;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.3s;
 }
 
 input.agenda[type="date"] {
@@ -558,8 +895,8 @@ table, th, td {
 }
 
 th, td {
-  padding: 12px;
-  text-align: center;
+  padding: 10px;
+  text-align: left;
   border: 1px solid #ddd;
 }
 
@@ -571,7 +908,7 @@ th, td {
 }
 
 th {
-  background-color: #3498db;
+  background-color: #103046;
   color: white;
   font-weight: bold;
 }
@@ -598,6 +935,56 @@ tbody tr:hover {
   color: white;
 }
 
+/* Estilo para los botones de acciones dentro de la tabla */
+a.agenda, a.button {
+  padding: 4px 2px;
+  background-color: #0d2b4a;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+a.agenda:hover, a.button:hover {
+  background-color: #0d2641;
+}
+
+a.buttonCancelar {
+  padding: 4px 2px;
+  background-color: #dc3545;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+a.buttonCancelar:hover {
+  background-color: #c82333;
+}
+
+
+/* Espaciado y alineación de las celdas de la tabla */
+td {
+  vertical-align: middle;
+}
+
+/* Ajustes para mejorar la presentación general */
+@media (max-width: 768px) {
+  .navbar-list {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  form.agenda {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  table {
+    font-size: 0.9em;
+  }
+}
+
+/*/////////////////////////////////////////////////////////////////////////////////////////*/
+
 /*Historial clinico*/
 .consulta {
   background-color: white;
@@ -614,13 +1001,14 @@ div.hce {
   margin-bottom: 30px;
   background-color: #ffffff;
   padding: 2rem;
+  margin: 2rem auto;
   border-radius: 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   width: 50%;
-  border: 2px solid #3498db;
+  border: 2px solid #113e5c;
   border-radius: 8px;
   padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 10px;
 }
 
 .consulta h2 {
@@ -632,6 +1020,43 @@ div.hce {
   margin: 5px 0;
 }
 
+/* Contenedor de los botones */
+div.botones {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+.botones {
+  margin: 2rem 0;
+}
+
+button.button {
+  background: #092c51; 
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0.5rem;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button.button:hover {
+  background: #0056b3; 
+}
+
+button.button:active {
+  transform: scale(0.95); 
+}
+
+/* Botón activo */
+button.button.activo {
+  background: #28a745; 
+}
+
+
 /* Divider */
 hr {
   border: none;
@@ -641,6 +1066,12 @@ hr {
 
 /* No data message */
 p {
+  text-align: center;
+  font-style: italic;
+  color: black;
+}
+
+div.evolucion {
   text-align: center;
   font-style: italic;
   color: black;
@@ -683,36 +1114,14 @@ p.no-data {
   background-color: #4cae4c;
 }
 
-/*estilo nuevo-turno*/
-form.nuevo {
-  background-color: #3498db;
-  display: flex;
-  flex-direction: column;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 800px;
-  margin-bottom: 1.5rem;
-}
-
-div.form-group{
-  margin-bottom: 1rem;
-  display: flex;
-  flex-direction: column;
-}
-
-input, select, textarea {
-  width: 100%;
-  padding: 10px;
-  font-size: 1em;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
-}
-
-
 /*modificar consulta*/
+
+div.hceContenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 form.modificar {
   background-color: white;
   display: flex;
@@ -723,6 +1132,12 @@ form.modificar {
   width: 100%;
   max-width: 800px;
   margin-bottom: 1.5rem;
+}
+
+div.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
 }
 
 
