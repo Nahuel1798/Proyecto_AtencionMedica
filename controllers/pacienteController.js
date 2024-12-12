@@ -51,7 +51,7 @@ exports.historialClinico = async (req, res) => {
   });
 
   // Obtener la última consulta
-  const ultimaConsulta = consultaFormateada[0]; // Suponiendo que las consultas están ordenadas por fecha DESC
+  const ultimaConsulta = formconsultasDelMedico[0] || null; // Suponiendo que las consultas están ordenadas por fecha DESC
   const medicoConsulta = formconsultasDelMedico;
   const medicoNoConsulta = formconsultasNoDelMedico;
 

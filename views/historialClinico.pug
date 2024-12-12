@@ -1,29 +1,3 @@
-//- doctype html
-//- html
-//-   head
-//-     title= title
-//-     link(rel='stylesheet', href='/stylesheets/style.css')
-//-     link(href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet")
-//-   body
-//-     h1 Historial Clínico de #{consulta[0].paciente_nombre || 'Paciente No Encontrado'}
-//-     // Botón para volver a la agenda
-//-     div.hce
-//-       a.button(href=`/agenda/${medicoId}`) Volver a la agenda
-//-     if consulta
-//-       each consultas in consulta
-//-         div.hce
-//-           h2 Consulta realizada el #{consultas.fecha_consulta} #{consultas.hora}
-//-           p Medico a cargo: #{consultas.medico || 'No disponible'}
-//-           p Diagnóstico: #{consultas.diagnostico || 'No disponible'}
-//-           p Evolución: #{consultas.evolucion || 'No disponible'}
-//-           p Alergias: #{consultas.alergias || 'No disponible'}
-//-           p Antecedentes Patológicos: #{consultas.antecedentes || 'No disponible'}
-//-           p Hábitos: #{consultas.habitos || 'No disponible'}
-//-           p Medicamentos en uso: #{consultas.medicamento || 'No disponible'}
-//-           hr
-//-     else
-//-       p No se encontraron datos del historial clínico.
-
 doctype html
 html
   head
@@ -53,6 +27,10 @@ html
         p Medicamentos en uso: #{ultimaConsulta.medicamento || 'No disponible'}
         a.button(href=`/modificarConsulta/${ultimaConsulta.id_consulta}`) Modificar Consulta
         hr
+    else
+      div.hce
+        h2 No se encontró una última consulta realizada por el médico actual.
+        p Por favor, revise los registros del paciente o agregue una nueva consulta.
 
     // Botones para alternar entre las consultas
     div.botones
@@ -74,7 +52,8 @@ html
             p Hábitos: #{consulta.habitos || 'No disponible'}
             p Medicamentos en uso: #{consulta.medicamento || 'No disponible'}
             hr
-
+      else 
+        p No se encontraron consultas realizadas por el medico.
 
     // Consultas atendidas por otros médicos
     div.hce#consultasOtrosMedicos(style="display: none;")
