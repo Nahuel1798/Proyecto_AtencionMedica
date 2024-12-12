@@ -38,13 +38,13 @@ html
           input.agenda(type="date", id="fecha", name="fecha" value=fechaSeleccionada)
           button(type="submit") Buscar
 
-        //- script.
-        //-   const campoFecha = document.getElementById('fecha');
-        //-   const ahora = new Date().toLocaleString("es-AR", {
-        //-     timeZone: "America/Argentina/Buenos_Aires"
-        //-   });
-        //-   const fechaArgentina = new Date(ahora).toISOString().slice(0, 10);
-        //-   campoFecha.value = fechaArgentina;
+        script.
+          const campoFecha = document.getElementById('fecha');
+          const ahora = new Date().toLocaleString("es-AR", {
+            timeZone: "America/Argentina/Buenos_Aires"
+          });
+          const fechaArgentina = new Date(ahora).toISOString().slice(0, 10);
+          campoFecha.value = fechaArgentina;
 
       // Mostrar mensaje si no hay turnos
       if message

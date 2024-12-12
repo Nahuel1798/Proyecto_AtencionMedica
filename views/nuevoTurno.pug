@@ -15,6 +15,13 @@ html
       div.form-group
         label(for="fecha") Fecha del Turno:
         input(type="date", name="fecha" required)
+      script.
+          const campoFecha = document.getElementById('fecha');
+          const ahora = new Date().toLocaleString("es-AR", {
+            timeZone: "America/Argentina/Buenos_Aires"
+          });
+          const fechaArgentina = new Date(ahora).toISOString().slice(0, 10);
+          campoFecha.value = fechaArgentina;
 
       div.form-group
         label(for="hora") Hora del Turno:
