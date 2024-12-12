@@ -65,6 +65,7 @@ html
             label(for='tipos_alergias') Alergias:
             select(name='tipos_alergias' id='tipos_alergias')
               if tiposAlergias.length > 0
+                option(value="" selected disabled) seleccione una alergia
                 each alergias in tiposAlergias
                   option(value=alergias.id_tipo_alergia) #{alergias.descripcion}
               else 
@@ -80,6 +81,7 @@ html
             label(for='importancia_alergia') Importancia de la Alergia:
             select(name="importancia_alergia" id="importancia_alergia")
               if importancias.length > 0
+                option(value="" selected disabled) seleccione la importancia
                 each importancia in importancias
                   option.consulta(value=importancia.id_importancia) #{importancia.nomenclatura}
               else

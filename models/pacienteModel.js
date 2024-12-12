@@ -10,6 +10,7 @@ module.exports = {
         d.descripcion AS diagnostico, 
         e.resumen_atencion AS evolucion, 
         a.tipo_alergia AS alergias, 
+        ta.descripcion AS tipo_alergias,
         an.descripcion AS antecedentes, 
         h.descripcion AS habitos, 
         m.nombre AS medicamento,
@@ -20,6 +21,7 @@ module.exports = {
       LEFT JOIN diagnostico d ON c.id_consulta = d.id_consulta
       LEFT JOIN evolucion e ON c.id_consulta = e.id_consulta
       LEFT JOIN alergia a ON c.id_consulta = a.id_consulta
+      LEFT JOIN tipo_alergia ta ON a.tipo_alergia = ta.id_tipo_alergia
       LEFT JOIN antecedentes an ON c.id_consulta = an.id_consulta
       LEFT JOIN habito h ON c.id_consulta = h.id_consulta
       LEFT JOIN medicamentos m ON c.id_consulta = m.id_consulta
@@ -43,6 +45,7 @@ module.exports = {
         d.descripcion AS diagnostico, 
         e.resumen_atencion AS evolucion, 
         a.tipo_alergia AS alergias, 
+        ta.descripcion AS tipo_alergias,
         an.descripcion AS antecedentes, 
         h.descripcion AS habitos, 
         m.nombre AS medicamento,
@@ -53,6 +56,7 @@ module.exports = {
       LEFT JOIN diagnostico d ON c.id_consulta = d.id_consulta
       LEFT JOIN evolucion e ON c.id_consulta = e.id_consulta
       LEFT JOIN alergia a ON c.id_consulta = a.id_consulta
+      LEFT JOIN tipo_alergia ta ON a.tipo_alergia = ta.id_tipo_alergia
       LEFT JOIN antecedentes an ON c.id_consulta = an.id_consulta
       LEFT JOIN habito h ON c.id_consulta = h.id_consulta
       LEFT JOIN medicamentos m ON c.id_consulta = m.id_consulta
@@ -76,6 +80,7 @@ module.exports = {
         d.descripcion AS diagnostico, 
         e.resumen_atencion AS evolucion, 
         a.tipo_alergia AS alergias, 
+        ta.descripcion AS tipo_alergias,
         an.descripcion AS antecedentes, 
         h.descripcion AS habitos, 
         m.nombre AS medicamento,
@@ -86,6 +91,7 @@ module.exports = {
       LEFT JOIN diagnostico d ON c.id_consulta = d.id_consulta
       LEFT JOIN evolucion e ON c.id_consulta = e.id_consulta
       LEFT JOIN alergia a ON c.id_consulta = a.id_consulta
+      LEFT JOIN tipo_alergia ta ON a.tipo_alergia = ta.id_tipo_alergia
       LEFT JOIN antecedentes an ON c.id_consulta = an.id_consulta
       LEFT JOIN habito h ON c.id_consulta = h.id_consulta
       LEFT JOIN medicamentos m ON c.id_consulta = m.id_consulta
@@ -109,6 +115,7 @@ module.exports = {
         d.descripcion AS diagnostico, 
         e.resumen_atencion AS evolucion, 
         a.tipo_alergia AS alergias, 
+        ta.descripcion AS tipo_alergias,
         an.descripcion AS antecedentes, 
         h.descripcion AS habitos, 
         m.nombre AS medicamento,
@@ -119,6 +126,7 @@ module.exports = {
       LEFT JOIN diagnostico d ON c.id_consulta = d.id_consulta
       LEFT JOIN evolucion e ON c.id_consulta = e.id_consulta
       LEFT JOIN alergia a ON c.id_consulta = a.id_consulta
+      LEFT JOIN tipo_alergia ta ON a.tipo_alergia = ta.id_tipo_alergia
       LEFT JOIN antecedentes an ON c.id_consulta = an.id_consulta
       LEFT JOIN habito h ON c.id_consulta = h.id_consulta
       LEFT JOIN medicamentos m ON c.id_consulta = m.id_consulta

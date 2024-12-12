@@ -10,6 +10,7 @@ exports.historialClinico = async (req, res) => {
 
   // Obtener los datos del historial clínico
   const consultas = await pacienteModel.getPacienteHistorial(pacienteId);
+  console.log('Datos obtenidos:', consultas);
   const consultasDelMedico = await pacienteModel.getPacienteHistorialDelMedico(pacienteId, medicoId);
   const consultasNoDelMedico = await pacienteModel.getPacienteHistorialNoDelMedico(pacienteId, medicoId);
   console.log('Datos obtenidos:', consultasDelMedico);
@@ -118,6 +119,9 @@ exports.actualizarConsulta = async (req, res) => {
   } = req.body;
 
   try {
+
+    const templates = await templateModel.obtenerTemplatesPorMedico(req.session.medicoId);
+
     // Paso 1: Actualizar el diagnóstico
     await pacienteModel.actualizarDiagnostico(consultaId, diagnostico, tipo_diagnostico);
 
@@ -167,6 +171,7 @@ exports.actualizarConsulta = async (req, res) => {
       importancias: importancias,
       tiposAlergias: tiposAlergias,
       tiposDiagnostico: tiposDiagnostico,
+      templates: templates,
       consultas: consultas[0]
     });
   } catch (error) {

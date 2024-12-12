@@ -2,7 +2,7 @@
 const db = require('../models/db');
 const turnosModel = require('../models/turnosModel');
 const bcrypt = require('bcrypt');
-const { DateTime } = require('luxon');
+// const { DateTime } = require('luxon');
 
 exports.loginPage = (req, res) => {
   res.render('login');
@@ -195,35 +195,12 @@ exports.crearTurno = async (req, res) => {
   const { fecha, hora, motivo, id_paciente, id_estado } = req.body;
   const medicoId = req.session.medicoId;
 
-  // // Obtener fecha y hora actual en Argentina
-  // const ahora = DateTime.now().setZone('America/Argentina/Buenos_Aires');
-
-  // // Validar fecha y hora ingresadas
-  // const fechaHoraIngresada = DateTime.fromFormat(
-  //   `${fecha} ${hora}`, 
-  //   'yyyy-MM-dd HH:mm', 
-  //   { zone: 'America/Argentina/Buenos_Aires' }
-  // );
-
-  // if (fechaHoraIngresada < ahora) {
-  //   return res.status(400).send('La fecha y hora ingresadas son anteriores a la actual.');
-  // }
-
-  // Verificar si el médico tiene una agenda
   const agenda = await turnosModel.obtenerAgendaPorMedico(medicoId);
   if (!agenda) {
     return res.status(400).send('No se encontró una agenda para este médico.');
   }
 
-  // Crear el turno
-  const result = await turnosModel.crearTurno(
-    fecha, 
-    hora, 
-    motivo, 
-    agenda.id_agenda, 
-    id_paciente, 
-    id_estado
-  );
+  const result = await turnosModel.crearTurno(fecha, hora, motivo, agenda.id_agenda, id_paciente, id_estado);
 
   if (result.affectedRows > 0) {
     res.redirect(`/agenda/${medicoId}`);
@@ -231,6 +208,48 @@ exports.crearTurno = async (req, res) => {
     res.status(500).send('Error al crear el turno.');
   }
 };
+
+
+// exports.crearTurno = async (req, res) => {
+//   const { fecha, hora, motivo, id_paciente, id_estado } = req.body;
+//   const medicoId = req.session.medicoId;
+
+//   // Obtener fecha y hora actual en Argentina
+//   const ahora = DateTime.now().setZone('America/Argentina/Buenos_Aires');
+
+//   // Validar fecha y hora ingresadas
+//   const fechaHoraIngresada = DateTime.fromFormat(
+//     `${fecha} ${hora}`, 
+//     'yyyy-MM-dd HH:mm', 
+//     { zone: 'America/Argentina/Buenos_Aires' }
+//   );
+
+//   if (fechaHoraIngresada < ahora) {
+//     return res.status(400).send('La fecha y hora ingresadas son anteriores a la actual.');
+//   }
+
+//   // Verificar si el médico tiene una agenda
+//   const agenda = await turnosModel.obtenerAgendaPorMedico(medicoId);
+//   if (!agenda) {
+//     return res.status(400).send('No se encontró una agenda para este médico.');
+//   }
+
+//   // Crear el turno
+//   const result = await turnosModel.crearTurno(
+//     fecha, 
+//     hora, 
+//     motivo, 
+//     agenda.id_agenda, 
+//     id_paciente, 
+//     id_estado
+//   );
+
+//   if (result.affectedRows > 0) {
+//     res.redirect(`/agenda/${medicoId}`);
+//   } else {
+//     res.status(500).send('Error al crear el turno.');
+//   }
+// };
 
 
 
